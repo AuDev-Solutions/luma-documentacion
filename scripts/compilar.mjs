@@ -3,6 +3,9 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { compilar, raiz } from './lib/tectonic.mjs';
 import { escribirLista } from './lista-fotos.mjs';
+import { escribirDatos } from './generar-datos.mjs';
+
+escribirDatos();
 
 for (const tex of ['manual.tex', 'hoja-verificacion.tex']) {
   if (!existsSync(join(raiz, tex))) continue;

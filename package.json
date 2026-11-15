@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Manual técnico del poste LUMA (LaTeX + Tectonic)",
   "scripts": {
+    "datos": "node scripts/generar-datos.mjs",
     "pdf": "node scripts/compilar.mjs",
     "test": "node --test --test-concurrency=1 tests/*.test.mjs"
   }
