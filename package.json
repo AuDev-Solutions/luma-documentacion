@@ -1,0 +1,11 @@
+{
+  "name": "documentacion-luma",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Manual técnico del poste LUMA (LaTeX + Tectonic)",
+  "scripts": {
+    "pdf": "node scripts/compilar.mjs",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs"
+  }
+}

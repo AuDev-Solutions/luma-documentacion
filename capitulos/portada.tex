@@ -1,0 +1,27 @@
+% Portada
+\begin{titlepage}
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[grafito] (current page.south west) rectangle (current page.north east);
+  % Dos caras del poste como columnas de píxeles
+  \foreach \x/\desfase in {0/0, 0.9/0.5} {
+    \foreach \i in {0,...,23} {
+      \pgfmathsetmacro{\tono}{mod(\i*11+\desfase*40,100)}
+      \fill[lima!\tono!white!80!lima] ($(current page.east)+(-3.2+\x,-6.6+\i*0.55+\desfase*0.27)$) circle (0.11);
+    }
+  }
+\end{tikzpicture}
+\vspace*{30mm}
+{\color{lima}\sffamily\bfseries\fontsize{64}{64}\selectfont LUMA}\par
+\vspace{8mm}
+{\color{marfil}\sffamily\LARGE Manual técnico de instalación,\\[2pt] uso y mantenimiento del poste LED}\par
+\vspace{6mm}
+{\color{marfil!70}\sffamily\large PCB\,V2 · ESP32-S3 · WLED · App LUMA}\par
+\vfill
+\begin{minipage}{0.62\linewidth}
+\pendiente{empresa}{Nombre de la empresa que entrega el proyecto.}
+\pendiente{cliente}{Nombre del cliente.}
+\pendiente{logo}{Logo para la portada.}
+\end{minipage}\par
+\vspace{6mm}
+{\color{marfil!70}\sffamily Versión del documento 0.1 · 15 de noviembre de 2026}
+\end{titlepage}
