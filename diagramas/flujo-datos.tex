@@ -1,0 +1,24 @@
+% Cómo viaja un cambio desde la pantalla de LUMA hasta los LED, y de vuelta
+\begin{tikzpicture}[
+  font=\sffamily\small, node distance=6mm and 12mm,
+  modulo/.style={draw=grafito, fill=marfil, rounded corners=2pt, align=center, minimum width=34mm, minimum height=10mm, inner sep=4pt},
+  poste/.style={draw=acento, fill=lima!35, rounded corners=2pt, align=center, minimum width=34mm, minimum height=10mm, inner sep=4pt},
+  ida/.style={-{Stealth[length=2mm]}, thick, grafito},
+  vuelta/.style={-{Stealth[length=2mm]}, thick, dashed, acento!80!black},
+  etiqueta/.style={font=\ttfamily\scriptsize, fill=white, inner sep=1.5pt},
+]
+  \node[modulo] (ui) {Pantalla (React)\\\texttt{App.jsx}, \texttt{components/}};
+  \node[modulo, below=of ui] (ctrl) {Lógica del poste\\\texttt{lib/controller.js}};
+  \node[modulo, below=of ctrl] (adap) {Adaptador WLED\\\texttt{lib/wled.js}};
+  \node[poste, right=30mm of adap] (wled) {WLED en la ESP32-S3};
+  \node[poste, above=of wled] (leds) {LED de las caras A y B};
+  \node[modulo, above=of leds] (render) {Vista del poste\\\texttt{lib/pole-renderer.js}};
+
+  \draw[ida] (ui) -- node[right, font=\scriptsize\sffamily]{escena editada} (ctrl);
+  \draw[ida] (ctrl) -- node[right, font=\scriptsize\sffamily]{segmentos, colores, efecto} (adap);
+  \draw[ida] (adap.east) ++(0,2mm) -- node[above, etiqueta]{POST /json/state} ++(30mm,0);
+  \draw[vuelta] (wled.west) ++(0,-2mm) -- node[below, etiqueta]{GET /json (confirmar)} ++(-30mm,0);
+  \draw[ida] (wled) -- node[right, font=\scriptsize\sffamily]{señal de datos} (leds);
+  \draw[vuelta] (wled.east) -- ++(6mm,0) |- node[pos=0.25, right, etiqueta]{/ws  \{lv:true\}} (render.east);
+  \draw[vuelta] (render.west) -- ++(-6mm,0) |- (ui.east);
+\end{tikzpicture}

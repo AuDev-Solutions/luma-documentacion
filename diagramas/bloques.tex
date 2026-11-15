@@ -1,0 +1,41 @@
+% Diagrama de bloques del sistema completo
+\begin{tikzpicture}[
+  font=\sffamily\small, node distance=8mm and 10mm,
+  bloque/.style={draw=grafito, fill=marfil, rounded corners=2pt, align=center, minimum height=10mm, inner sep=5pt},
+  placa/.style={draw=acento, dashed, rounded corners=4pt, inner sep=6pt},
+  cara/.style={draw=grafito, fill=lima!45, rounded corners=2pt, align=center, minimum height=10mm, minimum width=24mm},
+  energia/.style={-{Stealth[length=2.2mm]}, very thick, rojoaviso!80!black},
+  datos/.style={-{Stealth[length=2.2mm]}, thick, azulnota},
+  red/.style={{Stealth[length=2.2mm]}-{Stealth[length=2.2mm]}, thick, dashed, acento},
+]
+  \node[bloque] (red120) {Red eléctrica\\120 V AC};
+  \node[bloque, right=of red120] (fuente) {Fuente 12 V\\{\scriptsize\dato{fuente}}};
+
+  % Dentro de la PCB
+  \node[bloque, below=14mm of fuente, xshift=-28mm] (lm) {LM2596\\salida \dato{reguladorSalida}};
+  \node[bloque, below=of lm] (esp) {ESP32-S3 N16R8\\WLED + LUMA};
+  \node[bloque, right=22mm of lm] (fus) {Fusibles\\F6 (cara A) · F7 (cara B)};
+  \node[bloque, below=of fus] (bornes) {Borneras A1 · B1\\(+12 V, datos, GND)};
+  \node[placa, fit=(lm)(esp)(fus)(bornes), label={[font=\sffamily\small\bfseries\color{acento}, anchor=south east]north east:PCB\_V2}] (pcb) {};
+
+  \node[cara, below=14mm of bornes, xshift=-16mm] (caraA) {Cara A\\\dato{ledsPorCara} LED};
+  \node[cara, below=14mm of bornes, xshift=16mm] (caraB) {Cara B\\\dato{ledsPorCara} LED};
+
+  \node[bloque, left=36mm of esp] (tel) {Teléfono\\con LUMA abierta};
+
+  \draw[energia] (red120) -- (fuente);
+  \draw[energia] (fuente.south) -- ++(0,-5mm) -| (lm.north);
+  \draw[energia] (fuente.south) -- ++(0,-5mm) -| (fus.north);
+  \draw[energia] (lm) -- node[right, font=\scriptsize\sffamily]{5 V} (esp);
+  \draw[energia] (fus) -- (bornes);
+  \draw[datos] (esp.east) -- node[below, font=\scriptsize\sffamily, align=center]{datos\\A y B} (bornes.west);
+  \draw[energia] (bornes.south) -- ++(0,-5mm) -| (caraA.north);
+  \draw[energia] (bornes.south) -- ++(0,-5mm) -| (caraB.north);
+  \draw[red] (tel) -- node[above, font=\scriptsize\sffamily, align=center]{Wi-Fi «\dato{redPropiaSsid}»\\http://\dato{redPropiaIp}} (esp);
+
+  \matrix[below=6mm of caraA.south west, anchor=north west, column sep=4pt, font=\scriptsize\sffamily, xshift=-30mm] {
+    \draw[energia] (0,0) -- (6mm,0); & \node{energía}; &
+    \draw[datos] (0,0) -- (6mm,0); & \node{datos LED}; &
+    \draw[red] (0,0) -- (6mm,0); & \node{Wi-Fi}; \\
+  };
+\end{tikzpicture}
