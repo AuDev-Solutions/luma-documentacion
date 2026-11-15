@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, statSync, readFileSync } from 'node:fs';
-import { bomCsvATex, kicadCli } from '../scripts/exportar-kicad.mjs';
+import { bomCsvATex, kicadCli, pinesDesdeNetlist } from '../scripts/exportar-kicad.mjs';
 
 const csv = [
   '"Reference","Value","Footprint","QUANTITY","DNP"',
@@ -33,4 +33,14 @@ test('los exportes de KiCad existen', { skip: !existsSync(kicadCli()) && 'kicad-
   }
   const bom = readFileSync(new URL('../build/bom.csv', import.meta.url), 'utf8');
   for (const ref of ['U1', 'F1', 'LM1', 'INY1']) assert.ok(bom.includes(ref), `bom.csv sin ${ref}`);
+});
+
+test('pinesDesdeNetlist lee a qué GPIO del módulo va cada red de datos', () => {
+  const net = '(net\n(code "7")\n(name "/GPIO_A")\n(node\n(ref "B2")\n(pin "1")\n)\n(node\n(ref "U1")\n(pin "6")\n(pinfunction "GPIO6/ADC1_CH5_6")\n)\n)';
+  assert.deepEqual(pinesDesdeNetlist(net), { GPIO_A: 6 });
+});
+
+test('los pines del esquema en datos/poste.json son los del esquema de KiCad', { skip: !existsSync(kicadCli()) && 'kicad-cli no instalado' }, () => {
+  const datos = JSON.parse(readFileSync(new URL('../datos/poste.json', import.meta.url), 'utf8'));
+  assert.deepEqual(pinesDesdeNetlist(readFileSync(new URL('../build/netlist.net', import.meta.url), 'utf8')), datos.pinesEsquema);
 });

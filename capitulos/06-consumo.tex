@@ -1,0 +1,24 @@
+\chapter{Consumo y protección de corriente}\label{cap:consumo}
+
+\section{Cuánto consume un poste}
+
+En las pruebas se midieron \dato{corrienteMedida} (WS2811 de 12~V). Con \dato{ledsPorCara} píxeles por cara, una estimación proporcional da cerca de 1~A por cara y 2~A por poste a pleno brillo en blanco. La fuente de 15~A tiene margen de sobra.
+
+\nota{La estimación proporcional es una aproximación. Mide la corriente real del primer poste de producción con todos los píxeles en blanco al 100~\% y anótala en la hoja de verificación.}
+
+\section{El límite de corriente de WLED}
+
+WLED puede bajar el brillo automáticamente para no superar una corriente máxima. En la configuración que se entrega el límite está \textbf{apagado} (\texttt{maxpwr: 0}): se fija desde LUMA con los amperios reales de la fuente.
+
+\begin{enumerate}
+\item Abre LUMA y conéctate al poste.
+\item Entra en «Mi montaje» y busca la sección «Consumo».
+\item Escribe los amperios de la fuente (15 para la FUE0007).
+\item Pulsa el botón «Limitar a …». LUMA propone el 85~\% de los amperios de la fuente (12,75~A para 15~A), para dejar margen al controlador y a la tolerancia de la fuente.
+\end{enumerate}
+
+\captura[0.3]{consumo}{Sección «Consumo» de «Mi montaje»: corriente estimada ahora y límite configurado.}
+
+Con dos salidas (cara A y cara B), LUMA guarda el límite como límite global de WLED y deja en cero el de cada salida, conservando el driver de cada una (la cara B sigue en I2S). La cifra «ahora» es la estimación de WLED, calculada con la corriente por LED configurada (\texttt{ledma}), no una medición.
+
+\advertencia{Sin límite de corriente, un blanco a pleno brillo puede superar lo que entrega la fuente. Configura el límite en cada poste nuevo.}

@@ -1,0 +1,63 @@
+\chapter{La placa \dato{pcbVersion}}\label{cap:pcb}
+
+La placa reparte los 12~V de la fuente hacia las dos caras y hacia el regulador, protege cada salida con un fusible y lleva la ESP32-S3 que genera la señal de datos. El proyecto de KiCad está en \texttt{Documents/KiCad/Projects/PCB\_V2/} (\texttt{PCB\_V2.kicad\_pro}); los Gerbers de fabricación están en \texttt{gerber.zip} de esa misma carpeta y se incluyen en la carpeta de entregables.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{img/pcb/3d-superior.png}
+\caption{Vista superior generada desde KiCad.}\label{fig:3d-superior}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{img/pcb/3d-inferior.png}
+\caption{Vista inferior generada desde KiCad.}
+\end{figure}
+
+\foto{placa-superior}{Placa PCB\_V2 real, armada, vista desde arriba, con todas las borneras visibles.}{0.8}
+\foto{placa-inferior}{Placa PCB\_V2 real vista desde abajo (soldaduras).}{0.8}
+
+\section{Borneras y conexiones}
+
+Las conexiones salen del esquema de KiCad (redes entre paréntesis). El número de borne se cuenta según la serigrafía de la placa.
+
+\begin{longtable}{@{}p{0.17\linewidth} p{0.33\linewidth} p{0.43\linewidth}@{}}
+\toprule
+\textbf{Bornera} & \textbf{Bornes} & \textbf{Función} \\ \midrule \endhead
+S\_LM\_INY1 & 1 GND · 2 +12~V (\texttt{+12V\_INY}) & Entrada de 12~V para el regulador LM2596 y para las dos salidas de inyección. \\
+S\_A\_B1 & 1 GND · 2 +12~V (\texttt{+12V\_CARAS}) & Entrada de 12~V para las caras; se reparte por F6 y F7. \\
+A1 & 1 GND · 2 datos (\texttt{D1}) · 3 +12~V (\texttt{+12V\_A}) & Cara A: alimentación por F6 y datos desde R1. \\
+B1 & 1 GND · 2 datos (\texttt{D2}) · 3 +12~V (\texttt{+12V\_B}) & Cara B: alimentación por F7 y datos desde R2. \\
+INY1 & 1 GND · 2 +12~V (\texttt{INY1}) & Inyección de 12~V por F1, para el extremo lejano de una cara. \\
+INY2 & 1 GND · 2 +12~V (\texttt{INY2}) & Inyección de 12~V por F2, para el extremo lejano de la otra cara. \\
+B2 & 1 \texttt{GPIO\_A} · 2 \texttt{GPIO\_B} · 3 \texttt{GPIO\_C} & Señales de datos de la ESP32 antes de las resistencias (medición y señal adicional). \\
+\bottomrule
+\end{longtable}
+
+\section{Otros componentes}
+
+\begin{description}[leftmargin=0pt]
+\item[LM1 · LM2596] Módulo reductor que baja los 12~V a \dato{reguladorSalida} para la ESP32 (red \texttt{+5V\_ESP}, pin 21 «5V» del módulo). Se ajusta con su potenciómetro antes de poner la ESP32 (capítulo~\ref{cap:ensamble}).
+\item[U1 · ESP32-S3] Se conecta por su pin 5V (21) y sus pines GND (22, 23, 24 y 44). La zona de la antena no tiene cobre en ninguna de las dos caras de la placa.
+\item[R1 y R2] Resistencias en serie entre la ESP32 y la línea de datos de cada cara (\texttt{GPIO\_A}→\texttt{D1}, \texttt{GPIO\_B}→\texttt{D2}).
+\item[C1 y C2] Condensadores electrolíticos en la alimentación de cada cara (C2 en \texttt{+12V\_A}, C1 en \texttt{+12V\_B}). Respeta la polaridad.
+\end{description}
+
+\section{Fusibles}
+
+\begin{tabularx}{\linewidth}{@{}l l X@{}}
+\toprule
+\textbf{Fusible} & \textbf{Protege} & \textbf{Estado} \\ \midrule
+F1 & Inyección INY1 & Activo. \\
+F2 & Inyección INY2 & Activo. \\
+F5 & Entrada \texttt{+12V\_INY} & \textbf{No protege:} sus dos extremos están unidos por cobre en la placa. \\
+F6 & Cara A (\texttt{+12V\_A}) & Activo. \\
+F7 & Cara B (\texttt{+12V\_B}) & Activo. \\
+\bottomrule
+\end{tabularx}
+
+\advertencia{F5 está puenteado: aunque le pongas un fusible, la entrada del regulador y de la inyección queda sin protección. Protege esa línea con un fusible externo en el cable que sale de la fuente (capítulo~\ref{cap:cableado}).}
+
+\nota{Los portafusibles Keystone 3512P son abiertos: no tienen sellado contra agua, polvo ni condensación. Solo sirven dentro de una caja estanca.}
+
+\section{Estado de verificación del diseño}
+
+El chequeo eléctrico del esquema (ERC) no tiene errores. El chequeo de la placa (DRC) no tiene conexiones pendientes ni errores de separación entre pistas; quedan 22 avisos heredados de la versión anterior (4 de agujeros de montaje dentro del contorno del LM2596, 16 de serigrafía y 2 de huellas de resistencias modificadas). Revísalos si se manda a fabricar un lote nuevo.

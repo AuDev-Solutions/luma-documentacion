@@ -13,7 +13,7 @@
   "pinesPosteActual": { "caraA": 17, "caraB": 3 },
   "driverCaraA": "RMT (drv: 0)",
   "driverCaraB": "I2S (drv: 1)",
-  "pinesEsquema": { "GPIO_A": 4, "GPIO_B": 5, "GPIO_C": 7 },
+  "pinesEsquema": { "GPIO_A": 6, "GPIO_B": 5, "GPIO_C": 4 },
   "pinesConfirmados": null,
   "wledVersion": "17.0.0-devV5",
   "wledCommit": "961961fd",

@@ -1,0 +1,54 @@
+\chapter{Cableado del poste}\label{cap:cableado}
+
+\begin{figure}[H]\centering
+\resizebox{\linewidth}{!}{\input{diagramas/cableado}}
+\caption{Conexiones de la \dato{pcbVersion} según el esquema.}\label{fig:cableado}
+\end{figure}
+
+\advertencia{La fuente se conecta a la red de 120~V. Haz todas las conexiones con la red desconectada, usa terminales adecuados y conecta el borne de tierra de la fuente. La entrada de corriente alterna debe quedar protegida y fuera del alcance del público.}
+
+\section{Fuente y placa}
+
+\begin{enumerate}
+\item Fuente: L, N y tierra a la red eléctrica (con la red desconectada).
+\item Salida de 12~V de la fuente a S\_LM\_INY1 (borne 2 +12~V, borne 1 GND).
+\item Salida de 12~V de la fuente a S\_A\_B1 (borne 2 +12~V, borne 1 GND).
+\item Pon un fusible externo en el cable de la fuente que va a S\_LM\_INY1: dentro de la placa, F5 no protege esa línea.
+\end{enumerate}
+
+\advertencia{La fuente \dato{fuente}. No la expongas al sol ni a la lluvia: debe ir en una caja cuya temperatura real no pase de 40~°C, o cambiarse por una fuente para exteriores. La protección IP68 de los píxeles no cubre sus empalmes, la placa ni la fuente.}
+
+\section{Caras de luz}
+
+Cada cara es una cadena de \dato{ledsPorCara} píxeles. Los píxeles WS2811 tienen dirección: la flecha impresa en el cable indica hacia dónde viajan los datos. El extremo de \textbf{entrada} (DIN) es el que se conecta a la placa.
+
+\begin{enumerate}
+\item Cara A a la bornera A1: borne 1 GND, borne 2 datos, borne 3 +12~V.
+\item Cara B a la bornera B1, en el mismo orden.
+\item Inyección: lleva INY1 y INY2 (GND y +12~V) al extremo lejano de cada cara para que el brillo sea parejo en toda la altura.
+\end{enumerate}
+
+\nota{Los colores de los cables cambian entre lotes de píxeles. Verifica con el multímetro cuál es +12~V antes de atornillar.}
+
+\nota{La placa no lleva adaptador de nivel lógico (74HCT125): la ESP32 envía la señal a 3,3~V y funcionó en las pruebas con estos píxeles. Si con cables de datos largos aparecen parpadeos o colores errados en el primer píxel, acorta el cable de datos o añade un adaptador de nivel.}
+
+\foto{cara-entrada}{Extremo de entrada (DIN) de una cara conectado a la bornera A1, mostrando el orden GND · datos · +12 V.}{0.7}
+\foto{inyeccion-extremo}{Conexión de inyección al extremo lejano de una cara.}{0.7}
+
+\section{Caja y montaje}
+
+Placa y fuente van dentro de una caja estanca, con prensaestopas para los cables. La caja debe permitir disipar el calor de la fuente y dejar accesible el USB de la ESP32 para mantenimiento.
+
+\foto{caja-montada}{Caja abierta con la fuente y la placa instaladas y los cables entrando por los prensaestopas.}{0.8}
+\foto{poste-completo}{Poste completo instalado y encendido, con las dos caras visibles.}{0.6}
+
+\section{Fusibles y calibre del cable}
+
+La recomendación inicial, a partir de la corriente medida (\dato{corrienteMedida}), es:
+\begin{itemize}
+\item Por cara (F6 y F7, o portafusibles externos): \dato{fusibleCara}.
+\item A la salida de la fuente, antes de dividir los ramales: \dato{fusibleFuente}.
+\end{itemize}
+A 85~°C un fusible ATO de 4~A sostiene unos 3~A continuos y uno de 7,5~A unos 5~A (tabla de Littelfuse), así que hay que medir la temperatura real de la caja. Fuera de la caja usa portafusibles ATO sellados IP67 (por ejemplo, Littelfuse FHAS/FHAC). Cambiar solo la huella de la placa a un ATO abierto no da protección contra el ambiente.
+
+\pendiente{fusibles}{Valor definitivo de los fusibles F1, F2, F6, F7 y del fusible externo de la fuente, y calibre y longitud de los cables de 12~V. Los valores de arriba son la recomendación inicial del proyecto; se confirman midiendo la temperatura de la caja y la corriente del poste con 100 píxeles por cara.}

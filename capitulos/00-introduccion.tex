@@ -1,0 +1,62 @@
+\chapter{Cómo usar este manual}
+
+Este manual explica, de principio a fin, cómo se construye, se pone en marcha, se usa y se mantiene un poste de iluminación \dato{producto}. Está escrito para el técnico que instala postes y que, si hace falta, también modifica el código. No supone que conozcas WLED, React, KiCad ni LaTeX: cada término aparece en el glosario de este capítulo.
+
+\section{Qué es un poste LUMA}
+
+Un poste LUMA tiene dos caras de luces LED direccionables (\dato{tipoLed}), con \dato{ledsPorCara} píxeles por cara (\dato{ledsTotal} en total). Una placa propia, la \dato{pcbVersion}, reparte la energía de una fuente de 12~V y lleva una \dato{placaEsp} que ejecuta el firmware libre WLED. El poste crea su propia red Wi-Fi, «\dato{redPropiaSsid}», y sirve la aplicación LUMA en \texttt{http://\dato{redPropiaIp}}: cualquier teléfono que se una a esa red controla las luces sin internet ni computador.
+
+\begin{figure}[H]\centering
+\resizebox{\linewidth}{!}{\input{diagramas/bloques}}
+\caption{Visión general del sistema.}\label{fig:bloques}
+\end{figure}
+
+\section{Cómo está organizado}
+
+\begin{description}[style=nextline, leftmargin=0pt]
+\item[Parte I · Hardware] Materiales, la placa, el esquema eléctrico, el ensamble, el cableado del poste y el consumo.
+\item[Parte II · Firmware] Preparar el computador, grabar WLED en una ESP32-S3 nueva y configurarlo para el poste.
+\item[Parte III · App LUMA] Instalar la aplicación dentro del poste, usarla y probar el poste antes de entregarlo.
+\item[Parte IV · El código] Cómo está hecho LUMA, cómo hacer los cambios más comunes y cómo probarlos.
+\item[Parte V · Operación] Solución de problemas, actualizaciones, respaldos y limitaciones conocidas.
+\item[Anexos] Tabla de pines, configuración comentada, efectos, hoja de verificación, referencias y licencias.
+\end{description}
+
+Si vas a montar un poste nuevo, sigue las partes I, II y III en orden y termina con la hoja de verificación (anexo~D). Si vas a cambiar el código, lee primero el capítulo de arquitectura (parte IV).
+
+\section{Convenciones}
+
+Los recuadros señalan lo que no debe pasarse por alto:
+
+\advertencia{Un paso que puede dañar el equipo o causar un accidente si se hace mal. Léelo antes de seguir.}
+
+\nota{Información útil: una aclaración, un atajo o el porqué de un paso.}
+
+\pendiente{pinesConfirmados}{Un dato que el equipo todavía debe confirmar. Mientras exista este recuadro, el manual no da ese dato por cierto.}
+
+Los comandos que se escriben en una terminal aparecen así:
+
+\begin{comando}
+npm run build:poste
+\end{comando}
+
+Los nombres de botones y pantallas de LUMA se escriben entre comillas angulares, por ejemplo «Mi montaje». Las rutas de archivos y los nombres técnicos van en \texttt{letra de máquina}. Donde falta una foto real del montaje aparece un marco «FOTO PENDIENTE» con la descripción de lo que hay que fotografiar.
+
+\section{Glosario}
+
+\begin{description}[leftmargin=0pt, itemsep=0.3em]
+\item[AP (punto de acceso)] Red Wi-Fi que crea el propio poste («\dato{redPropiaSsid}»). Funciona sin router ni internet.
+\item[cfg.json] Archivo de configuración de WLED guardado en la memoria de la ESP32: pines, cantidad de LED, red, horarios.
+\item[Escena] Combinación guardada de colores, efecto, segmentos y brillo. LUMA la guarda en el teléfono y, si se marca, en el poste (como preset de WLED).
+\item[ESP32-S3] Microcontrolador con Wi-Fi que controla las luces. La placa usada es una \dato{placaEsp}.
+\item[Firmware] Programa grabado en la ESP32. Aquí es WLED versión \dato{wledVersion}.
+\item[GPIO] Pin de entrada/salida de la ESP32. Cada cara de LED recibe sus datos por un GPIO.
+\item[I2S y RMT] Dos periféricos internos de la ESP32 que WLED usa para generar la señal de los LED. En este poste la cara A usa RMT y la cara B debe usar I2S (ver capítulo~\ref{cap:wled}).
+\item[Inyección] Alimentar la tira también por el extremo lejano para que no caiga la tensión a lo largo del poste.
+\item[OTA] Actualización del firmware por Wi-Fi, sin cable USB.
+\item[Píxel] Cada punto de luz controlable. En las tiras WS2811 de 12~V, un chip controla un píxel.
+\item[Preset] Escena guardada dentro de WLED; LUMA usa presets para las escenas del poste, el modo automático y el horario.
+\item[Segmento] Tramo de LED con su propio efecto y colores. LUMA admite hasta 16.
+\item[WLED] Firmware libre para controlar LED direccionables desde una ESP32 (\url{https://kno.wled.ge}).
+\item[WS2811] Tipo de chip de los píxeles. Recibe datos en serie: el primer píxel toma su color y pasa el resto al siguiente.
+\end{description}

@@ -48,12 +48,23 @@ export function bomCsvATex(csv) {
   });
   return [
     '% Generado por scripts/exportar-kicad.mjs desde PCB_V2. No editar.',
-    '\\begin{longtable}{@{}p{0.15\\linewidth} p{0.31\\linewidth} p{0.2\\linewidth} c p{0.2\\linewidth}@{}}',
+    '\\begin{longtable}{@{}>{\\raggedright\\arraybackslash}p{0.13\\linewidth} >{\\raggedright\\arraybackslash}p{0.3\\linewidth} >{\\raggedright\\arraybackslash}p{0.2\\linewidth} c >{\\raggedright\\arraybackslash}p{0.22\\linewidth}@{}}',
     '\\toprule \\textbf{Ref.} & \\textbf{Componente} & \\textbf{Huella} & \\textbf{Cant.} & \\textbf{Proveedor / nota} \\\\ \\midrule \\endhead',
     ...filas,
     '\\bottomrule',
     '\\end{longtable}',
   ].join('\n');
+}
+
+// Red de datos (GPIO_A/B/C) → número de GPIO del pin de U1 al que llega, leído del netlist de KiCad.
+export function pinesDesdeNetlist(netlist) {
+  const pines = {};
+  for (const bloque of netlist.split(/\(net\s*\n/).slice(1)) {
+    const red = bloque.match(/\(name "\/?(GPIO_[A-Z])"\)/)?.[1];
+    const funcion = bloque.match(/\(ref "U1"\)\s*\(pin "\d+"\)\s*\(pinfunction "GPIO(\d+)/)?.[1];
+    if (red && funcion) pines[red] = Number(funcion);
+  }
+  return pines;
 }
 
 export function exportar() {
@@ -73,6 +84,7 @@ export function exportar() {
     kicad('pcb', 'render', '--side', lado[0], '--quality', 'high', '--width', '1600', '--height', '1000', '--background', 'opaque', '-o', join(img, `3d-${lado[1]}.png`), pcb);
   }
   kicad('sch', 'export', 'bom', '--fields', 'Reference,Value,Footprint,QUANTITY,DNP', '--group-by', 'Value', '-o', join(build, 'bom.csv'), sch);
+  kicad('sch', 'export', 'netlist', '--format', 'kicadsexpr', '-o', join(build, 'netlist.net'), sch);
   writeFileSync(join(build, 'bom.tex'), bomCsvATex(readFileSync(join(build, 'bom.csv'), 'utf8')) + '\n');
 }
 

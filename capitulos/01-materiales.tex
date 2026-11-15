@@ -1,0 +1,25 @@
+\chapter{Lista de materiales}\label{cap:materiales}
+
+Un poste lleva la placa \dato{pcbVersion} con sus componentes, la fuente, las dos caras de píxeles y el material de cableado y protección. La lista de la placa sale directamente del esquema de KiCad, así que coincide con lo que se fabricó.
+
+\section{Componentes de la placa}
+
+\input{build/bom.tex}
+
+\nota{El esquema no guarda el valor de R1, R2, C1 y C2 (aparecen como «R» y «C\_Polarized\_Small»). Toma el valor de la lista de compra o de las piezas que vienen en las placas ya armadas.}
+
+\section{Materiales fuera de la placa}
+
+\begin{longtable}{@{}p{0.3\linewidth} p{0.18\linewidth} p{0.44\linewidth}@{}}
+\toprule
+\textbf{Material} & \textbf{Cantidad} & \textbf{Referencia} \\ \midrule \endhead
+Fuente conmutada 12~V 15~A (180~W) & 1 & Electronilab FUE0007 · \url{https://electronilab.co/tienda/fuente-conmutada-12v-dc-15a-180w/} \\
+Píxeles WS2811 12~V, 12~mm, IP68 (paquetes de 25) & \dato{ledsTotal} píxeles (8 paquetes) & Electronilab · \url{https://electronilab.co/tienda/25-x-led-rgb-pixels-12mm-difusos-ws2811-waterproof-ip68/} \\
+Placa ESP32-S3 N16R8 & 1 & Electronilab WIF0036 (se suelda o inserta en U1) \\
+Fusibles 5×20~mm para F1, F2, F6 y F7 & 4 & Valor por confirmar (capítulo~\ref{cap:cableado}) \\
+Cable para 12~V, datos y tierra & según la altura del poste & Calibre por confirmar (capítulo~\ref{cap:cableado}) \\
+Caja estanca para placa y fuente & 1 & Debe mantener la fuente dentro de 0--40~°C \\
+\bottomrule
+\end{longtable}
+
+\pendiente{listaCompra}{Lista de compra real con proveedor, referencia exacta y cantidad de cada pieza (incluidos los valores de R1, R2, C1, C2, el calibre del cable y la caja). Mientras no exista, esta lista se basa en el esquema de KiCad y en los enlaces de Electronilab de las notas del proyecto.}

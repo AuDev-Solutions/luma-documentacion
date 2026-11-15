@@ -1,0 +1,57 @@
+\chapter{Ensamble de la placa}\label{cap:ensamble}
+
+Herramientas: cautín y soldadura, multímetro, destornillador pequeño (para el potenciómetro del LM2596 y las borneras), fuente de 12~V y lupa.
+
+\section{Antes de empezar}
+
+\begin{enumerate}
+\item Revisa la placa desnuda: sin pistas cortadas ni puentes de soldadura.
+\item Si es un lote nuevo, compara la placa ESP32-S3 real con la huella: 2 hileras de 22 pines, paso 2,54~mm, 22,86~mm entre hileras, y la posición de 5V, GND y los pines de datos. Los dos conectores USB-C deben quedar accesibles.
+\end{enumerate}
+
+\section{Soldar los componentes}
+
+Suelda de lo más bajo a lo más alto:
+\begin{enumerate}
+\item R1 y R2.
+\item C1 y C2, respetando la polaridad (la franja del condensador es el negativo).
+\item Portafusibles F1, F2, F5, F6 y F7.
+\item Borneras: S\_LM\_INY1, S\_A\_B1, INY1, INY2, A1, B1 y B2, con la entrada de cable hacia el borde de la placa.
+\item Módulo LM2596.
+\end{enumerate}
+Resultado esperado: todos los componentes menos la ESP32 en su lugar.
+
+\section{Ajustar el regulador a \dato{reguladorSalida}}
+
+\advertencia{Ajusta el LM2596 \textbf{antes} de poner la ESP32. Muchos módulos vienen de fábrica con una salida mayor de 5~V, que daña la ESP32 al primer encendido.}
+
+\begin{enumerate}
+\item Conecta 12~V a S\_LM\_INY1 (borne 2 positivo, borne 1 GND).
+\item Mide con el multímetro entre OUT+ y OUT- del módulo.
+\item Gira el potenciómetro azul hasta leer \dato{reguladorSalida}.
+\item Comprueba la polaridad: OUT+ debe llegar al pin 5V de la huella de la ESP32 y OUT- a GND.
+\item Desconecta los 12~V.
+\end{enumerate}
+
+\foto{lm2596-ajuste}{Multímetro midiendo 5,0 V en la salida del LM2596 mientras se gira el potenciómetro.}{0.7}
+
+\section{Instalar la ESP32-S3}
+
+\begin{enumerate}
+\item Coloca el módulo con la antena hacia la zona sin cobre de la placa y los USB-C accesibles.
+\item Suéldalo (o insértalo en zócalo, si la placa los lleva).
+\item Sin conectar el USB, aplica 12~V en S\_LM\_INY1 y mide 5~V entre el pin 5V del módulo y GND.
+\end{enumerate}
+
+\advertencia{No conectes al mismo tiempo el USB de la ESP32 y la alimentación del LM2596. Espressif indica que alimentar por USB y por el pin 5V son opciones excluyentes. Para grabar o depurar por USB, desconecta primero los 12~V de la placa.}
+
+\foto{esp-instalada}{ESP32-S3 instalada en la placa, con la antena y los dos USB-C visibles.}{0.7}
+
+\section{Comprobaciones finales sin carga}
+
+Con la placa desconectada, mide continuidad y confirma que \textbf{no} hay corto entre:
+\begin{itemize}
+\item +12~V y GND en S\_LM\_INY1, S\_A\_B1, A1, B1, INY1 e INY2.
+\item 5V y GND de la ESP32.
+\end{itemize}
+Pon los fusibles (capítulo~\ref{cap:cableado}). Anota los valores medidos en la hoja de verificación (anexo~D).
