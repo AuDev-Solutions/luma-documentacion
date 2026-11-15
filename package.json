@@ -6,6 +6,7 @@
   "description": "Manual técnico del poste LUMA (LaTeX + Tectonic)",
   "scripts": {
     "datos": "node scripts/generar-datos.mjs",
+    "kicad": "node scripts/exportar-kicad.mjs",
     "pdf": "node scripts/compilar.mjs",
     "test": "node --test --test-concurrency=1 tests/*.test.mjs"
   }
