@@ -1,3 +1,53 @@
-\chapter{Configuración cfg.json comentada}\label{anx:cfg}
+\chapter{Configuración \texttt{cfg-plantilla.json} comentada}\label{anx:cfg}
 
-% Se completa en su tarea del plan.
+La plantilla se genera con \texttt{npm run datos} a partir de la configuración del poste que funciona, quitando nombres y contraseñas de redes. Está en \texttt{archivos/cfg-plantilla.json} y en los entregables. Estos son los bloques que importan; el resto son valores por defecto de WLED.
+
+\section{Salidas de LED (\texttt{hw.led})}
+\begin{codigo}
+"total": 200,       // LED en total (dos caras de 100)
+"maxpwr": 0,        // límite global en mA; 0 = apagado (se fija desde LUMA)
+"ins": [
+  { "start": 0,   "len": 100, "pin": [17], "type": 22, "order": 1, "drv": 0, "ledma": 30 },
+  { "start": 100, "len": 100, "pin": [3],  "type": 22, "order": 1, "drv": 1, "ledma": 30 }
+]
+\end{codigo}
+\begin{description}[leftmargin=1.5em]
+\item[\texttt{start}, \texttt{len}] Primer LED y cantidad de cada salida. La cara B empieza donde termina la A.
+\item[\texttt{pin}] GPIO de datos (anexo~\ref{anx:pines}).
+\item[\texttt{type: 22}] WS281x RGB.
+\item[\texttt{order: 1}] Orden de color RGB (el de los WS2811).
+\item[\texttt{drv}] 0 = RMT, 1 = I2S. La segunda salida debe ser I2S.
+\item[\texttt{ledma: 30}] Corriente por LED con la que WLED \emph{estima} el consumo (no es una medición).
+\end{description}
+
+\section{Red propia (\texttt{ap}) y red de casa (\texttt{nw})}
+\begin{codigo}
+"ap": { "ssid": "LUMA-Poste1", "chan": 6, "hide": 0, "behav": 2, "ip": [4, 3, 2, 1] },
+"nw": { "ins": [ { "ssid": "", ... } ] }
+\end{codigo}
+\begin{description}[leftmargin=1.5em]
+\item[\texttt{behav: 2}] Red propia siempre activa (0 = solo al arrancar sin conexión, 1 = cuando no hay conexión, 3 = solo con el botón).
+\item[\texttt{ip}] Dirección del poste en su propia red: \dato{redPropiaIp}.
+\item[\texttt{nw.ins[0].ssid} vacío] Sin red de casa: el poste funciona solo.
+\item[Contraseñas] No van en \texttt{cfg.json}. La red propia queda con la de fábrica hasta cambiarla (capítulo~\ref{cap:wled}).
+\end{description}
+
+\section{Identidad (\texttt{id})}
+\begin{codigo}
+"id": { "mdns": "luma-poste", "name": "LUMA" }
+\end{codigo}
+\texttt{name} es el nombre que muestra LUMA. Para distinguir varios postes, cámbialo en cada uno (por ejemplo «LUMA Poste 07») en Config › User Interface, o en la plantilla antes de subirla.
+
+\section{Encendido (\texttt{def}), hora (\texttt{if.ntp}) y horario (\texttt{timers})}
+\begin{codigo}
+"def": { "ps": 0, "on": true, "bri": 128 },
+"if":  { "ntp": { "en": false, "tz": 0, "offset": 0, "lt": 0, "ln": 0 } },
+"timers": { "ins": [] }
+\end{codigo}
+LUMA escribe estos bloques: \texttt{def.ps} pasa a 248 (escena al encender) al aplicar escenas, \texttt{if.ntp} recibe la diferencia horaria y la ubicación del teléfono, y \texttt{timers.ins} recibe el horario. En la plantilla quedan vacíos a propósito.
+
+\section{Seguridad (\texttt{ota})}
+\begin{codigo}
+"ota": { "lock": false, "lock-wifi": false, "aota": false, "same-subnet": true }
+\end{codigo}
+Las actualizaciones quedan sin bloquear para poder instalar LUMA. Bloquéalas al terminar (capítulo~\ref{cap:actualizar}).

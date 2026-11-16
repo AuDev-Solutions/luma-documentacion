@@ -4,8 +4,10 @@ import { join } from 'node:path';
 import { compilar, raiz } from './lib/tectonic.mjs';
 import { escribirLista } from './lista-fotos.mjs';
 import { escribirDatos } from './generar-datos.mjs';
+import { escribirEfectos } from './efectos.mjs';
 
 escribirDatos();
+await escribirEfectos();
 
 for (const tex of ['manual.tex', 'hoja-verificacion.tex']) {
   if (!existsSync(join(raiz, tex))) continue;

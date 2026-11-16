@@ -1,3 +1,59 @@
 \chapter{Actualizar y respaldar}\label{cap:actualizar}
 
-% Se completa en su tarea del plan.
+\section{Copia de seguridad de un poste}
+
+Haz una copia de cada poste al entregarlo y después de cada cambio importante. Guárdala con el número del poste.
+
+\begin{enumerate}
+\item Une el computador a la red del poste y abre \texttt{http://\dato{redPropiaIp}/settings}.
+\item \textbf{Security \& Updates} › «Backup \& Restore»:
+\begin{itemize}
+\item \textbf{Backup configuration} descarga \texttt{cfg.json} (pines, LED, red, horario).
+\item \textbf{Backup presets} descarga \texttt{presets.json} (escenas del poste, modo automático, escena al encender).
+\end{itemize}
+\item Renómbralos, por ejemplo \texttt{poste-07\_cfg.json} y \texttt{poste-07\_presets.json}.
+\end{enumerate}
+
+\nota{\texttt{cfg.json} no incluye las contraseñas: WLED las guarda aparte. Al restaurar en una placa nueva hay que volver a poner la contraseña de la red propia.}
+
+\section{Restaurar}
+
+En la misma pantalla, \textbf{Restore configuration} sube \texttt{cfg.json} y \textbf{Restore presets} sube \texttt{presets.json}. Después corta la corriente y vuelve a conectarla. Para reemplazar la ESP32 de un poste: graba el firmware en la nueva (capítulo~\ref{cap:grabar}), restaura los dos archivos, cambia la contraseña e instala LUMA.
+
+\section{Actualizar LUMA}
+
+\begin{enumerate}
+\item En el computador, trae la última versión: \texttt{git pull} en \texttt{luma-app}.
+\item \texttt{npm install} (por si cambiaron dependencias) y \texttt{npm test}.
+\item Une el computador a la red del poste y ejecuta:
+\begin{comando}
+npm run build:poste
+npm run instalar:poste -- 4.3.2.1
+\end{comando}
+\end{enumerate}
+Las escenas del poste no se tocan: están en \texttt{presets.json}, no en la app.
+
+\section{Actualizar el firmware por Wi-Fi}
+
+\advertencia{Actualiza el firmware solo a una versión probada en un poste de banco. Haz antes la copia de seguridad.}
+
+\begin{enumerate}
+\item Si las actualizaciones están bloqueadas, desbloquéalas: \textbf{Security \& Updates}, desmarca «Lock wireless (OTA) software update», escribe la contraseña de bloqueo en «Passphrase» y guarda.
+\item Abre \texttt{http://\dato{redPropiaIp}/update}.
+\item Elige \texttt{WLED\_\dato{wledVersion}\_ESP32-S3\_N16R8\_actualizacion.bin} (el archivo de actualización, \textbf{no} el completo) y pulsa \textbf{Upload}.
+\item Espera a que el poste se reinicie (hasta un minuto). No cortes la corriente mientras tanto.
+\item Comprueba que LUMA abre y que las dos caras encienden. Vuelve a bloquear las actualizaciones.
+\end{enumerate}
+
+\nota{Si una actualización por Wi-Fi falla y el poste no arranca, graba el binario completo por USB (capítulo~\ref{cap:grabar}) y restaura la copia de seguridad.}
+
+\section{Asegurar un poste instalado}
+
+En \textbf{Security \& Updates}:
+\begin{enumerate}
+\item \textbf{Settings PIN}: un PIN de 4 cifras para los ajustes. Anótalo en un lugar seguro: si se olvida, hay que regrabar el poste.
+\item \textbf{Lock wireless (OTA) software update} con una contraseña en «Passphrase». Mientras está bloqueado, nadie puede cambiar el firmware por Wi-Fi ni usar el editor de archivos \texttt{/edit}.
+\item Guarda. En LUMA, escribe el PIN en «Mi montaje» › «Seguridad».
+\end{enumerate}
+
+\advertencia{La contraseña de bloqueo de actualizaciones y el PIN no se recuperan. Guárdalos con los datos del poste, por un canal privado, nunca en la hoja de verificación.}

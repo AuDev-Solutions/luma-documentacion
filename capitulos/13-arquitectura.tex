@@ -1,6 +1,6 @@
 \chapter{Arquitectura de LUMA}\label{cap:arquitectura}
 
-LUMA es una aplicación web hecha con React 18 y Vite. No tiene servidor propio ni base de datos: todo corre en el navegador del teléfono, que habla directamente con WLED por HTTP y WebSocket. Lo que debe sobrevivir a un cambio de teléfono (escenas del poste, modo automático, horario, escena de encendido) se guarda \emph{en el poste}, como presets y configuración de WLED. En el teléfono solo quedan preferencias y escenas personales.
+LUMA es una aplicación web hecha con React 19 y Vite 7. No tiene servidor propio ni base de datos: todo corre en el navegador del teléfono, que habla directamente con WLED por HTTP y WebSocket. Lo que debe sobrevivir a un cambio de teléfono (escenas del poste, modo automático, horario, escena de encendido) se guarda \emph{en el poste}, como presets y configuración de WLED. En el teléfono solo quedan preferencias y escenas personales.
 
 \begin{figure}[H]\centering
 \resizebox{\linewidth}{!}{\input{diagramas/flujo-datos}}

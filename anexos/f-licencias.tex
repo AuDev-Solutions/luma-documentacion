@@ -1,3 +1,23 @@
 \chapter{Licencias}\label{anx:licencias}
 
-% Se completa en su tarea del plan.
+\section{Firmware}
+WLED se usa sin modificaciones, en la versión \dato{wledVersion} (commit \texttt{\dato{wledCommit}}). Su licencia es la \textbf{EUPL 1.2} (Licencia Pública de la Unión Europea): permite usarlo, copiarlo y distribuirlo, también con fines comerciales. Quien entregue el binario debe poder indicar dónde está su código fuente: \url{https://github.com/wled/WLED}, en ese commit. Texto completo: \texttt{WLED/LICENSE}.
+
+\section{Dependencias de la app LUMA}
+
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.34\linewidth} l l X@{}}
+\toprule
+\textbf{Paquete} & \textbf{Versión} & \textbf{Licencia} & \textbf{Uso} \\ \midrule
+react, react-dom & 19.3.0 & MIT & Interfaz \\
+lucide-react & 0.468.0 & ISC & Iconos \\
+@fontsource-variable/dm-sans & 5.3.0 & OFL-1.1 & Fuente DM Sans \\
+@fontsource-variable/manrope & 5.3.0 & OFL-1.1 & Fuente Manrope \\
+vite, @vitejs/plugin-react & 7.3.6 · 5.2.0 & MIT & Compilación (no va en la app) \\
+playwright-core & 1.59.1 & Apache-2.0 & Pruebas (no va en la app) \\
+\bottomrule
+\end{tabularx}
+
+MIT, ISC y Apache-2.0 permiten el uso comercial conservando el aviso de copyright. La OFL permite incluir las fuentes dentro de la app, pero no venderlas por separado.
+
+\section{La app LUMA, la placa y este manual}
+El código de LUMA, la placa \dato{pcbVersion} y este manual se desarrollaron para el cliente. Sus condiciones de uso son las del acuerdo entre el equipo de desarrollo y el cliente.

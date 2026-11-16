@@ -1,3 +1,18 @@
 \chapter{Limitaciones conocidas y mejoras pendientes}\label{cap:limitaciones}
 
-% Se completa en su tarea del plan.
+Lo que el sistema no hace hoy, por qué y qué se propone.
+
+\begin{description}[leftmargin=0pt, itemsep=0.6em]
+\item[Sin reloj con pila] La ESP32 pierde la hora en cada corte de luz. Sin internet, el horario no funciona hasta que alguien abre LUMA y le pasa la hora del teléfono. \emph{Mejora:} añadir un reloj DS3231 con pila (WLED lo admite como \emph{usermod}, requiere recompilar el firmware) o una fotocelda que encienda al oscurecer sin depender de la hora.
+\item[Límite de corriente apagado de fábrica] La plantilla deja \texttt{maxpwr: 0}. Hay que configurarlo en cada poste (capítulo~\ref{cap:consumo}).
+\item[LUMA solo por http] LUMA se abre desde el propio poste por \texttt{http}. Una copia publicada en internet con \texttt{https} no puede hablar con el poste porque el navegador lo bloquea.
+\item[F5 no protege] En la \dato{pcbVersion}, F5 está puenteado por cobre. La entrada del regulador y la inyección dependen del fusible externo. \emph{Mejora:} corregir la pista en la próxima versión de la placa.
+\item[Fusibles por confirmar] Valores y portafusibles definitivos pendientes de medir temperatura y corriente reales (capítulo~\ref{cap:cableado}).
+\item[Fuente de interiores] La FUE0007 trabaja de 0 a 40~°C y no es estanca. Requiere caja ventilada y protegida, o cambiarla por una fuente para exteriores.
+\item[Avisos del chequeo de la placa] El DRC muestra 22 avisos heredados de la versión anterior (agujeros del LM2596, serigrafía y huellas de resistencias). Ninguno es de conexión ni de separación, pero conviene limpiarlos antes de un lote nuevo.
+\item[Sin adaptador de nivel lógico] La señal sale a 3,3~V. Funciona con los cables de prueba; con cables largos puede hacer falta un 74HCT125.
+\item[Pines por confirmar] Ver sección~\ref{sec:pines}.
+\item[Sin sincronización entre postes] Cada poste es independiente: no hay efectos coordinados entre varios postes ni control central. WLED tiene sincronización por red (UDP) que podría usarse si los postes compartieran una red.
+\item[Vista en vivo para un navegador] WLED envía la vista en vivo a un solo navegador a la vez.
+\item[Vista previa aproximada] Sin conexión, la vista de LUMA simula los efectos; no reproduce exactamente los algoritmos de WLED.
+\end{description}

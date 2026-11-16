@@ -1,3 +1,27 @@
 \chapter{Tabla de pines}\label{anx:pines}
 
-% Se completa en su tarea del plan.
+\section{Pines de datos de las caras}
+
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.3\linewidth} X X X@{}}
+\toprule
+\textbf{Señal} & \textbf{Esquema PCB\_V2 (netlist)} & \textbf{Poste funcionando} & \textbf{Driver en WLED} \\ \midrule
+Cara A (\texttt{GPIO\_A} → R1 → \texttt{D1} → A1) & GPIO\dato{pinesEsquema.GPIO_A} & GPIO\dato{pinesPosteActual.caraA} & RMT (\texttt{drv: 0}) \\
+Cara B (\texttt{GPIO\_B} → R2 → \texttt{D2} → B1) & GPIO\dato{pinesEsquema.GPIO_B} & GPIO\dato{pinesPosteActual.caraB} & I2S (\texttt{drv: 1}) \\
+Reserva (\texttt{GPIO\_C} → B2) & GPIO\dato{pinesEsquema.GPIO_C} & --- & --- \\
+\bottomrule
+\end{tabularx}
+
+\pendiente{pinesConfirmados}{Confirmar en la placa fabricada qué GPIO lleva los datos de cada cara (procedimiento en la sección~\ref{sec:comprobar-pin}) y actualizar \texttt{datos/poste.json} y \texttt{archivos/cfg-plantilla.json}.}
+
+\section{Alimentación y otros pines de la ESP32}
+
+\begin{tabularx}{\linewidth}{@{}l l X@{}}
+\toprule
+\textbf{Pin del módulo} & \textbf{Red} & \textbf{Uso} \\ \midrule
+21 (5V) & \texttt{+5V\_ESP} & Alimentación desde el LM2596 (\dato{reguladorSalida}). \\
+22, 23, 24, 44 (GND) & GND & Tierra común con la fuente y las caras. \\
+GPIO0 (botón BOOT) & --- & Modo de grabación. En WLED es el botón 0: de 6 a 9~s abre la red de configuración; más de 10~s borra la memoria de archivos. \\
+\bottomrule
+\end{tabularx}
+
+\nota{Si puedes elegir, no uses como datos los GPIO 19 y 20 (USB), 26 a 37 (memoria flash y PSRAM de la N16R8) ni los pines de arranque 0, 3, 45 y 46. GPIO3 funciona en el poste actual como datos de la cara B; como es un pin de arranque, no lo fuerces a un nivel fijo con resistencias externas.}

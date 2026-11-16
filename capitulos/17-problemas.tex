@@ -1,3 +1,32 @@
 \chapter{Solución de problemas}\label{cap:problemas}
 
-% Se completa en su tarea del plan.
+Busca el síntoma en la tabla. Si hay varias causas, están en el orden en que conviene revisarlas.
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.24\linewidth} >{\raggedright\arraybackslash}p{0.3\linewidth} >{\raggedright\arraybackslash}p{0.38\linewidth}@{}}
+\toprule
+\textbf{Síntoma} & \textbf{Causa probable} & \textbf{Solución} \\ \midrule \endhead
+La cara B (segunda cara) queda apagada; la cara A funciona & Las dos salidas están en el driver RMT: este firmware solo envía datos por la primera & En «LED \& Hardware», marca «Show Advanced Settings» y pon la salida 2 en driver I2S. Guarda y corta la corriente (capítulo~\ref{cap:wled}). \\
+Un cambio en «LED \& Hardware» no se aplica & El reinicio por software no siempre recarga la configuración de LED & Guarda, corta la corriente 5 segundos y vuelve a conectarla. \\
+Ninguna cara enciende & Pin de datos errado, sin 12~V en las caras, fusible F6/F7 abierto o cara conectada por el extremo de salida & Revisa los pines (sección~\ref{sec:comprobar-pin}), mide 12~V en A1/B1, revisa los fusibles y la flecha de los píxeles. \\
+Los primeros píxeles parpadean o muestran colores errados & Señal de datos de 3,3~V débil en un cable largo & Acorta el cable de datos entre placa y primer píxel; si no basta, añade un adaptador de nivel (74HCT125). \\
+Rojo y verde salen cambiados & Orden de color errado & En «LED \& Hardware», orden de color RGB en las dos salidas. \\
+El brillo baja hacia el extremo de la cara o el blanco se ve amarillo arriba & Caída de tensión a lo largo de la cara & Conecta la inyección (INY1/INY2) al extremo lejano. \\
+El brillo baja solo al poner blanco a pleno & El límite de corriente está actuando & Normal. Revisa en «Mi montaje» › «Consumo» que el límite corresponda a la fuente. \\
+No aparece la red propia «\dato{redPropiaSsid}» & Poste sin corriente, ESP32 sin 5~V, firmware sin configurar (aparece «WLED-AP») o la ESP32 dañada & Mide 5~V en la ESP32. Si ves «WLED-AP», sube la plantilla (capítulo~\ref{cap:wled}). Mantén pulsado BOOT entre 6 y 9 segundos y suéltalo para forzar la red de configuración. \\
+La red propia aparece y desaparece & El poste busca una red de casa que no encuentra & Quita la red de casa en «WiFi \& Network», o en LUMA «Configurar para funcionar solo». \\
+El poste no se une a la red de casa o la del taller & La red es de 5~GHz: la ESP32 solo usa 2,4~GHz & Usa una red de 2,4~GHz (en muchos routers se separan las dos bandas con nombres distintos). \\
+El poste no responde: LUMA dice «No se pudo comunicar con el poste» & Teléfono en otra red, datos móviles activos, dirección errada o poste apagado & Une el teléfono a «\dato{redPropiaSsid}», desactiva un momento los datos móviles y abre \texttt{http://\dato{redPropiaIp}}. Si sigue, corta la corriente del poste y vuelve a conectarla. \\
+LUMA no conecta desde una página HTTPS (por ejemplo, una copia publicada en internet) & El navegador bloquea pedir datos por \texttt{http} desde una página \texttt{https} & Abre LUMA desde el propio poste, \texttt{http://\dato{redPropiaIp}}, o desde \texttt{npm run dev} en el computador. \\
+Al abrir \texttt{http://\dato{redPropiaIp}} aparece la interfaz de WLED, no LUMA & LUMA no está instalada en ese poste & Instálala (capítulo~\ref{cap:instalar}). \\
+El horario no enciende o enciende a otra hora tras un corte de luz & El poste no tiene reloj con pila y perdió la hora en el corte & Abre LUMA y pulsa «Poner la hora de este teléfono» en Escenas › Horario. Para no depender de esto, ver capítulo~\ref{cap:limitaciones}. \\
+LUMA dice «Este poste está protegido con un PIN de ajustes» & El poste tiene PIN y LUMA no lo tiene & Escribe el PIN en «Mi montaje» › «Seguridad». \\
+PIN de ajustes olvidado & El PIN solo se puede cambiar conociéndolo & Restablece el poste: graba de nuevo el firmware por USB con borrado completo (capítulo~\ref{cap:grabar}), sube la plantilla, cambia la contraseña e instala LUMA. Las escenas del poste se pierden salvo que tengas copia (capítulo~\ref{cap:actualizar}). \\
+«El poste recibió la solicitud, pero no confirmó todos los cambios» & El modo automático u otra app cambió el estado & Detén el modo automático o cierra la otra app y vuelve a aplicar. \\
+«El firmware del poste no incluye el efecto…» & El poste tiene otra versión de WLED & Graba la versión \dato{wledVersion} (capítulo~\ref{cap:grabar}) o elige otro efecto. \\
+La vista «En vivo» dice «Sin señal» & WLED envía la vista en vivo a un solo navegador a la vez & Cierra LUMA o la interfaz de WLED en el otro teléfono y pulsa «Reconectar vista». \\
+El computador no ve el puerto USB de la ESP32 & Cable que solo carga, conector USB equivocado o falta el driver & Prueba otro cable y el otro USB-C de la placa; instala el driver (capítulo~\ref{cap:pc}). \\
+esptool no conecta («Failed to connect») & La ESP32 no está en modo de grabación & Mantén BOOT, pulsa y suelta RST, suelta BOOT y repite el comando. \\
+\bottomrule
+\end{longtable}
+
+\advertencia{Mantener pulsado BOOT más de 10 segundos (con la placa encendida) borra toda la memoria de archivos de WLED: configuración, escenas y la app LUMA. Solo hazlo a propósito y con copia de seguridad.}
