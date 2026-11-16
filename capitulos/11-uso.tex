@@ -1,3 +1,129 @@
 \chapter{Uso de LUMA}\label{cap:uso}
 
-% Se completa en su tarea del plan.
+Este capítulo recorre la app pantalla por pantalla. Las capturas se tomaron con un poste simulado de dos caras de \dato{ledsPorCara} LED; en un poste real se ven igual.
+
+\section{Conectar}
+
+Al abrir LUMA en \texttt{http://\dato{redPropiaIp}} se conecta sola. Desde otra dirección (por ejemplo, la copia de desarrollo en el computador) aparece desconectada, con una simulación del poste:
+
+\captura[0.3]{inicio-desconectado}{LUMA sin conectar: la vista muestra una simulación.}
+
+Pulsa «Conectar poste», escribe la dirección del poste (\dato{redPropiaIp} en su red propia) y «Conectar». Si el poste tiene PIN de ajustes, escríbelo en «Mi montaje» › «Seguridad», campo «PIN de ajustes (si configuraste uno)», antes de guardar escenas en el poste.
+
+\captura[0.32]{conectar-dialogo}{Ventana «Conectar poste».}
+
+Conectada, la vista superior pasa a «En vivo»: lo que se dibuja son los colores que el poste está mostrando, recibidos por WebSocket.
+
+\captura[0.3]{conectado}{LUMA conectada: arriba la vista en vivo del poste, abajo el editor.}
+
+\nota{\textbf{Todo cambio llega al poste al instante.} No hay botón «Aplicar»: cada color, efecto o segmento que eliges se envía al poste en una fracción de segundo. Dos segundos y medio después, LUMA guarda esa combinación como la escena que el poste mostrará al volver a encenderse. Deshacer y Rehacer (Ctrl+Z / Ctrl+Y en el computador) también se aplican al poste.}
+
+\nota{\textbf{Las dos caras son siempre iguales.} Cada cara es un segmento de WLED. Lo que editas se aplica a las dos caras a la vez: no hace falta configurar la cara B por separado.}
+
+\section{Brillo general}
+
+El control «Brillo» de la parte superior regula el brillo de todo el poste. Va aparte del brillo de cada segmento.
+
+\captura[0.42]{brillo}{Brillo general del poste.}
+
+\section{Colores}
+
+La pestaña «Colores» tiene una rueda de color, la luminosidad, el código hexadecimal, colores rápidos y uno aleatorio. Las ranuras «Principal», «Fondo» y «Acento» son los tres colores que usan los efectos.
+
+\captura[0.3]{colores}{Pestaña «Colores».}
+
+\section{Efectos}
+
+La pestaña «Efectos» muestra la galería de diseños, con categorías, búsqueda (sin importar tildes) y favoritos. Los diseños que el firmware del poste no tiene se marcan «No disponible en este poste». La lista completa está en el anexo~\ref{anx:efectos}.
+
+\captura[0.3]{efectos-galeria}{Galería de efectos.}
+
+Al elegir un efecto aparecen sus ajustes: velocidad, intensidad, paleta y dirección.
+
+\captura[0.42]{efecto-detalle}{Ajustes del efecto «Fuego ámbar».}
+
+\section{Segmentos}
+
+Un segmento es un tramo de LED con su propio efecto y colores (hasta 16). En la pestaña «Segmentos»:
+\begin{itemize}
+\item «Partir en partes iguales» divide el poste en 2 a 6 partes, con un color cada una.
+\item «Crear segmento» añade un tramo con «Desde LED» y «Hasta LED».
+\item La barra «Editando» elige qué segmento cambias desde cualquier pestaña; «Todos» edita todos a la vez.
+\item «Unir en uno» vuelve a un solo segmento.
+\end{itemize}
+
+\captura[0.3]{segmentos}{Poste partido en dos segmentos.}
+
+\section{Vista ampliada}
+
+«Ver poste» (o el botón de ampliar de la vista) abre la vista grande, para mirar una cara o las dos con detalle.
+
+\captura[0.3]{vista-poste-ampliada}{Vista ampliada del poste.}
+
+\section{Escenas}
+
+\subsection{Temas}
+La pestaña «Escenas» empieza con temas listos: Navidad, Noche de invierno, Año nuevo, Halloween, Amor y amistad, Fiestas patrias, Blanco cálido y Fiesta. Al tocar uno se aplica al poste.
+
+\captura[0.3]{temas}{Temas listos para usar.}
+
+\subsection{Guardar una escena}
+«Guardar escena», escribe un nombre y deja marcada «Guardar también en el poste» para que la escena quede dentro del poste y se pueda usar desde cualquier teléfono, en el modo automático y en el horario. Sin esa marca, la escena queda solo en este teléfono (hasta 12).
+
+\captura[0.32]{escenas-guardar}{Guardar una escena en el poste y en el teléfono.}
+
+\subsection{Escenas del poste y escena al encender}
+La sección «En el poste» lista las escenas guardadas en el poste. Desde ahí se aplican, se eliminan o se eligen como «Escena al encender». La opción «La última aplicada» hace que el poste vuelva a lo último que se mostró.
+
+\captura[0.3]{escenas-lista}{Escenas guardadas en el poste; «Navidad» elegida para el encendido.}
+
+\section{Modo automático}
+
+Rota las escenas del poste que marques cada cierto número de minutos («Cambiar cada»), sin teléfono conectado. Hacen falta al menos dos escenas guardadas en el poste. Se detiene con «Detener».
+
+\captura[0.3]{modo-automatico}{Modo automático con dos escenas.}
+
+\section{Horario}
+
+Enciende el poste «Al anochecer» (con la ubicación del poste) o «A una hora», y lo apaga a una hora. «Usar la ubicación de este teléfono» llena latitud y longitud.
+
+\captura[0.3]{horario}{Horario: encender al anochecer y apagar a una hora.}
+
+\advertencia{El poste no tiene reloj con pila. Tras un corte de luz no sabe la hora hasta que alguien abre LUMA (que le pasa la hora del teléfono, botón «Poner la hora de este teléfono») o hasta que se une a una red con internet. Mientras tanto el horario no funciona. Ver capítulo~\ref{cap:limitaciones}.}
+
+\section{Mi montaje}
+
+El botón «Mi montaje» abre los ajustes del poste: el montaje (cuántos LED y caras), el consumo, el Wi-Fi propio y la seguridad.
+
+\captura[0.3]{mi-montaje}{«Mi montaje».}
+
+\begin{description}[leftmargin=0pt]
+\item[Montaje] Los píxeles WS2811 no informan cuántos hay: LUMA lee la cantidad configurada en WLED. Con dos salidas de 100, el montaje es «Dos caras · 200 LEDs». «Volver a detectar» relee la configuración; «La cara B empieza arriba» ajusta la vista cuando la cara B está cableada desde arriba.
+\item[Consumo] Corriente estimada y límite (capítulo~\ref{cap:consumo}).
+\item[Wi-Fi del poste] Estado de la red propia y «Configurar para funcionar solo», que fija el nombre y la contraseña de la red propia y quita la red de casa.
+\item[Seguridad] Estado de la contraseña de la red propia y del bloqueo de actualizaciones, con un enlace a los ajustes avanzados de WLED.
+\end{description}
+
+\captura[0.3]{wifi-propio}{Sección «Wi-Fi del poste».}
+
+\captura[0.3]{seguridad}{Sección «Seguridad».}
+
+\advertencia{En un poste instalado en la calle: cambia la contraseña de la red propia, pon un PIN de ajustes y bloquea las actualizaciones remotas (capítulo~\ref{cap:actualizar}). LUMA no cambia contraseñas de seguridad para no dejarte fuera del poste.}
+
+\section{En el computador}
+
+En una pantalla ancha, LUMA muestra la vista del poste y el editor lado a lado.
+
+\begin{figure}[H]\centering
+\includegraphics[width=\linewidth]{img/app/escritorio-general.png}
+\caption{LUMA en el computador.}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[width=\linewidth]{img/app/escritorio-segmentos.png}
+\caption{Poste partido en cuatro segmentos, en el computador.}
+\end{figure}
+
+\section{Desconectar}
+
+«Desconectar esta app» (en la ventana de conexión) solo desconecta el teléfono: el poste sigue mostrando la última escena.

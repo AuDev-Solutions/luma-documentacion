@@ -1,3 +1,66 @@
 \chapter{Grabar el firmware en una ESP32-S3 nueva}\label{cap:grabar}
 
-% Se completa en su tarea del plan.
+El firmware es WLED \dato{wledVersion} sin modificaciones, compilado para la \dato{placaEsp} (16~MB de flash y 8~MB de PSRAM, entorno \texttt{\dato{wledEntorno}}). Se entrega en dos archivos dentro de \texttt{entregables/firmware/}:
+
+\begin{description}[style=nextline, leftmargin=1.5em]
+\item[\texttt{WLED\_17.0.0-devV5\_ESP32-S3\_N16R8\_completo.bin}] Placa nueva o borrada: se graba completo en la dirección \texttt{0x0}.
+\item[\texttt{WLED\_17.0.0-devV5\_ESP32-S3\_N16R8\_actualizacion.bin}] Actualizar un poste que ya tiene WLED, por Wi-Fi (capítulo~\ref{cap:actualizar}).
+\end{description}
+
+\advertencia{Antes de conectar el USB, desconecta los 12~V de la placa. Con esta placa, el LM2596 alimenta directamente el pin 5V de la ESP32: alimentar a la vez por USB y por el LM2596 puede dañar la ESP32 o el puerto USB del computador. Lo ideal es grabar la ESP32 antes de instalarla en la placa.}
+
+\section{Camino principal: grabar el binario completo}
+
+\subsection{Poner la ESP32 en modo de grabación}
+\begin{enumerate}
+\item Conecta la ESP32-S3 por USB (sin 12~V).
+\item Mantén pulsado el botón \textbf{BOOT}.
+\item Pulsa y suelta \textbf{RST} (o \textbf{EN}).
+\item Suelta \textbf{BOOT}. La placa queda esperando un firmware.
+\end{enumerate}
+
+\subsection{Con esptool (terminal)}
+Cambia \texttt{COM5} por el puerto de tu placa (capítulo~\ref{cap:pc}). Si la ESP32 ya tenía otro programa, bórrala primero:
+\begin{comando}
+esptool --chip esp32s3 --port COM5 erase-flash
+\end{comando}
+Luego graba el binario completo:
+\begin{comando}
+esptool --chip esp32s3 --port COM5 --baud 921600 write-flash 0x0 WLED_17.0.0-devV5_ESP32-S3_N16R8_completo.bin
+\end{comando}
+Resultado esperado: la barra de progreso llega al 100~\% y termina con «Hash of data verified». Pulsa \textbf{RST} para reiniciar.
+
+\subsection{Alternativa: desde el navegador}
+Si no quieres instalar Python, usa la herramienta oficial de Espressif en Chrome o Edge: \url{https://espressif.github.io/esptool-js/}.
+\begin{enumerate}
+\item «Connect» y elige el puerto de la ESP32.
+\item En «Flash Address» escribe \texttt{0x0} y elige el archivo \texttt{\_completo.bin}.
+\item «Program» y espera a que termine. Pulsa \textbf{RST}.
+\end{enumerate}
+
+\nota{No uses el instalador web de WLED (install.wled.me): instala versiones publicadas de WLED, no la versión \dato{wledVersion} que se probó en el poste.}
+
+\section{Comprobar que quedó grabado}
+
+Al reiniciar, WLED crea su red de configuración: \textbf{WLED-AP}, contraseña \texttt{wled1234} (valores de fábrica de WLED). Si la ves desde el teléfono, el firmware quedó bien. Sigue con el capítulo~\ref{cap:wled}.
+
+\foto{red-wled-ap}{Lista de redes Wi-Fi del teléfono mostrando «WLED-AP» después de grabar una placa nueva.}{0.45}
+
+\section{Camino alterno: compilar el firmware}
+
+Solo hace falta si cambias la versión de WLED o sus opciones de compilación.
+\begin{enumerate}
+\item Abre la carpeta \texttt{WLED} en VS Code con PlatformIO instalado.
+\item Instala las dependencias de la interfaz web de WLED: \texttt{npm ci}.
+\item Compila el entorno \texttt{\dato{wledEntorno}}:
+\begin{comando}
+pio run -e esp32s3dev_16MB_opi
+\end{comando}
+\item Arma los dos binarios desde la carpeta \texttt{documentacion}:
+\begin{comando}
+npm run firmware -- --armar
+\end{comando}
+\end{enumerate}
+\texttt{npm run firmware} (sin \texttt{-{}-armar}) compila y arma en un solo paso. El binario completo une, en este orden: \texttt{bootloader.bin} en \texttt{0x0}, \texttt{partitions.bin} en \texttt{0x8000}, \texttt{boot\_app0.bin} en \texttt{0xe000} y \texttt{firmware.bin} en \texttt{0x10000}, con la tabla de particiones de 16~MB de WLED (\texttt{tools/WLED\_ESP32\_16MB\_9MB\_FS.csv}).
+
+\nota{Si la compilación falla con «xtensa-esp32s3-elf-g++ no se reconoce», PlatformIO no encuentra el compilador. Reinstala la plataforma desde PlatformIO (Platforms › Updates) o añade al PATH la carpeta \texttt{bin} del paquete \texttt{toolchain-xtensa-esp-elf} que está en \texttt{\%USERPROFILE\%\textbackslash .platformio\textbackslash packages}.}

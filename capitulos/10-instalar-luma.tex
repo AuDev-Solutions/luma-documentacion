@@ -1,3 +1,63 @@
 \chapter{Instalar LUMA en el poste}\label{cap:instalar}
 
-% Se completa en su tarea del plan.
+LUMA es una página web. Se guarda dentro de la memoria de la ESP32, junto a WLED, y el poste la sirve como página principal: quien se une a la red «\dato{redPropiaSsid}» y abre \texttt{http://\dato{redPropiaIp}} ve LUMA, sin internet, sin computador y sin instalar nada en el teléfono. Los ajustes de WLED siguen disponibles en \texttt{http://\dato{redPropiaIp}/settings}.
+
+\section{Qué se sube al poste}
+
+\texttt{npm run build:poste} compila LUMA y empaqueta todo (código, estilos, fuentes e icono) en un único archivo comprimido de unos 210~KB, dentro de \texttt{luma-app/dist-poste/}:
+
+\begin{description}[leftmargin=1.5em, style=nextline]
+\item[\texttt{luma.htm.gz}] La aplicación completa. Se sube dos veces: como \texttt{luma.htm.gz} y como \texttt{index.htm.gz}, para que sea la página principal del poste.
+\item[\texttt{luma.webmanifest}, \texttt{luma-192.png}, \texttt{luma-512.png}] Nombre e iconos para añadir LUMA a la pantalla de inicio del teléfono.
+\end{description}
+
+\section{Instalar desde el computador}
+
+\begin{enumerate}
+\item Une el computador a la red del poste, «\dato{redPropiaSsid}» (o a una red de 2,4~GHz a la que esté unido el poste).
+\item Compila y sube:
+\begin{comando}
+cd C:\Proyectos\LUMA\luma-app
+npm run build:poste
+npm run instalar:poste -- 4.3.2.1
+\end{comando}
+Si el poste tiene un PIN de ajustes, añádelo al final: \texttt{npm run instalar:poste -{}- 4.3.2.1 1234}.
+\item El instalador revisa que haya espacio, sube cada archivo y comprueba que el poste responda con LUMA en \texttt{/luma.htm} y en \texttt{/}.
+\end{enumerate}
+
+Resultado esperado:
+\begin{comando}
+✓ luma.htm.gz
+✓ luma.webmanifest
+✓ luma-192.png
+✓ luma-512.png
+✓ index.htm.gz
+LUMA instalada en el poste. Ábrela en http://4.3.2.1 ...
+\end{comando}
+
+\nota{Si el instalador dice «El poste pide PIN de ajustes», repite el comando con el PIN. Si dice que no hay espacio, abre \texttt{http://4.3.2.1/edit} para ver qué otros archivos ocupan la memoria del poste.}
+
+\section{Instalar sin Node.js (solo navegador)}
+
+Si en el computador no está Node.js pero tienes la carpeta \texttt{dist-poste} ya compilada:
+\begin{enumerate}
+\item Abre \texttt{http://\dato{redPropiaIp}/edit} en el navegador (el editor de archivos de WLED).
+\item Sube \texttt{luma.htm.gz}, \texttt{luma.webmanifest}, \texttt{luma-192.png} y \texttt{luma-512.png}.
+\item En el computador, haz una copia de \texttt{luma.htm.gz} llamada \texttt{index.htm.gz} y súbela también.
+\item Abre \texttt{http://\dato{redPropiaIp}}: debe aparecer LUMA.
+\end{enumerate}
+
+\nota{El editor \texttt{/edit} deja de estar disponible cuando se bloquean las actualizaciones remotas del poste (capítulo~\ref{cap:actualizar}). En ese caso desbloquéalas un momento o usa \texttt{npm run instalar:poste}.}
+
+\section{Abrir LUMA desde el teléfono}
+
+\begin{enumerate}
+\item En el teléfono, únete a la red «\dato{redPropiaSsid}». Si el teléfono avisa «sin internet», elige mantener la conexión.
+\item Abre el navegador y escribe \texttt{http://\dato{redPropiaIp}} (con \texttt{http}, no \texttt{https}).
+\item LUMA se conecta sola al poste.
+\item Para tenerla como app: en Chrome (Android) menú › «Añadir a pantalla de inicio»; en Safari (iPhone) Compartir › «Añadir a pantalla de inicio».
+\end{enumerate}
+
+\captura[0.3]{conectado}{LUMA abierta desde el poste y conectada.}
+
+\advertencia{Algunos teléfonos, al ver que la red del poste no tiene internet, envían los datos por la red móvil y la página no carga. Si pasa, desactiva un momento los datos móviles o confirma «Mantener conexión» en el aviso de Wi-Fi.}

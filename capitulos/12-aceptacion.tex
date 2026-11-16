@@ -1,3 +1,49 @@
 \chapter{Prueba de aceptación del poste}\label{cap:aceptacion}
 
-% Se completa en su tarea del plan.
+Antes de entregar o instalar un poste, recorre esta prueba completa. La hoja de verificación (anexo~\ref{anx:hoja}) tiene las mismas casillas en una página para imprimir y firmar.
+
+\section{Eléctrica (sin la ESP32 conectada al USB)}
+\begin{enumerate}
+\item Sin corto entre +12~V y GND en todas las borneras.
+\item LM2596 entrega \dato{reguladorSalida} medidos en el pin 5V de la ESP32.
+\item Fusibles puestos en F1, F2, F6 y F7, y fusible externo en la línea de S\_LM\_INY1.
+\end{enumerate}
+
+\section{Firmware y red}
+\begin{enumerate}[resume]
+\item Al encender aparece la red «\dato{redPropiaSsid}» (no «WLED-AP»).
+\item La contraseña de la red propia ya no es la de fábrica.
+\item \texttt{http://\dato{redPropiaIp}} abre LUMA; \texttt{http://\dato{redPropiaIp}/settings} abre los ajustes de WLED.
+\item En «LED \& Hardware»: dos salidas de \dato{ledsPorCara}, cara A en RMT y cara B en I2S, total \dato{ledsTotal}.
+\end{enumerate}
+
+\section{Luces}
+\begin{enumerate}[resume]
+\item Color fijo rojo, luego verde, luego azul: las dos caras muestran el mismo color en todos los píxeles. Si rojo y verde salen cambiados, el orden de color está mal (debe ser RGB).
+\item Blanco al 100~\%: el último píxel de cada cara no se ve amarillento (si se ve, falta inyección).
+\item Un efecto en movimiento (por ejemplo «Fuego ámbar»): las dos caras se mueven igual.
+\item La vista «En vivo» de LUMA coincide con lo que se ve en el poste.
+\end{enumerate}
+
+\section{Funciones de LUMA}
+\begin{enumerate}[resume]
+\item Guardar una escena en el poste; aparece en «En el poste».
+\item Elegirla como «Escena al encender», cortar la corriente y volver a conectarla: el poste arranca con esa escena.
+\item Límite de corriente configurado en «Mi montaje» › «Consumo».
+\item Si se usará el horario: hora puesta desde el teléfono y horario guardado.
+\end{enumerate}
+
+\section{Seguridad}
+\begin{enumerate}[resume]
+\item PIN de ajustes puesto y actualizaciones remotas bloqueadas (capítulo~\ref{cap:actualizar}).
+\item Copia de seguridad de \texttt{cfg.json} y \texttt{presets.json} guardada con el número del poste.
+\end{enumerate}
+
+\section{Medidas que se anotan}
+\begin{itemize}
+\item Tensión de salida del LM2596.
+\item Corriente total del poste en blanco al 100~\% (pinza amperimétrica en el cable de 12~V).
+\item Temperatura dentro de la caja tras 30 minutos en blanco al 100~\%.
+\end{itemize}
+
+\nota{Si una prueba falla, busca el síntoma en el capítulo~\ref{cap:problemas}.}

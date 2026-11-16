@@ -1,3 +1,67 @@
 \chapter{Preparar el computador}\label{cap:pc}
 
-% Se completa en su tarea del plan.
+Esto se hace una sola vez por computador. Las instrucciones son para Windows 10 u 11; en macOS y Linux los programas son los mismos.
+
+\section{Programas}
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.22\linewidth} >{\raggedright\arraybackslash}p{0.38\linewidth} >{\raggedright\arraybackslash}p{0.32\linewidth}@{}}
+\toprule
+\textbf{Programa} & \textbf{Para qué} & \textbf{Dónde} \\ \midrule \endhead
+Git & Descargar y actualizar el código desde GitHub & \url{https://git-scm.com} \\
+Node.js 20 LTS o superior & Compilar LUMA y la interfaz de WLED & \url{https://nodejs.org} \\
+Visual Studio Code & Editar el código & \url{https://code.visualstudio.com} \\
+PlatformIO (extensión de VS Code) & Compilar y grabar WLED & Buscar «PlatformIO IDE» en las extensiones de VS Code \\
+Python 3 + esptool & Grabar el firmware desde la terminal & \url{https://www.python.org}; luego \texttt{pip install esptool} \\
+KiCad 10 (opcional) & Abrir y modificar la placa & \url{https://www.kicad.org} \\
+\bottomrule
+\end{longtable}
+
+Comprueba cada instalación en una terminal nueva (PowerShell):
+\begin{comando}
+git --version
+node --version
+esptool version
+\end{comando}
+Cada comando debe responder con un número de versión.
+
+\section{Obtener el código}
+
+El código del proyecto se entrega en GitHub: la app LUMA y esta documentación en sus repositorios, y WLED desde su repositorio oficial en la versión exacta que se probó.
+
+\pendiente{repositorioApp}{Dirección del repositorio de GitHub donde se entrega LUMA (y de esta documentación). Mientras tanto se escribe \texttt{<repositorio-luma>}.}
+
+\begin{comando}
+mkdir C:\Proyectos\LUMA
+cd C:\Proyectos\LUMA
+git clone <repositorio-luma> luma-app
+git clone https://github.com/wled/WLED.git WLED
+cd WLED
+git checkout 961961fd
+\end{comando}
+
+\nota{\texttt{git checkout \dato{wledCommit}} fija WLED en la versión \dato{wledVersion} que se probó en el poste. No actualices WLED a otra versión sin repetir la prueba de aceptación completa (capítulo~\ref{cap:aceptacion}).}
+
+La estructura que debe quedar es:
+\begin{comando}
+C:\Proyectos\LUMA\
+    luma-app\        la aplicación LUMA
+    WLED\            el firmware
+    documentacion\   este manual (opcional)
+\end{comando}
+
+Instala las dependencias de LUMA una vez:
+\begin{comando}
+cd C:\Proyectos\LUMA\luma-app
+npm install
+\end{comando}
+
+\section{Reconocer el puerto USB de la ESP32}
+
+\begin{enumerate}
+\item Desconecta los 12~V de la placa (ver la advertencia del capítulo~\ref{cap:grabar}).
+\item Conecta la ESP32-S3 al computador con un cable USB-C de datos (algunos cables solo cargan).
+\item Abre el Administrador de dispositivos › Puertos (COM y LPT). Debe aparecer un puerto nuevo, por ejemplo \texttt{COM5}.
+\item Si no aparece, prueba el otro conector USB-C de la placa. Si sigue sin aparecer, instala el driver del chip USB-serie que lleva la placa (CH340/CH343 de WCH o CP210x de Silicon Labs, según la placa).
+\end{enumerate}
+
+\foto{puerto-com}{Administrador de dispositivos de Windows mostrando el puerto COM de la ESP32-S3.}{0.6}

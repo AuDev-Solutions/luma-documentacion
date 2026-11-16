@@ -1,3 +1,72 @@
 \chapter{Configurar WLED para el poste}\label{cap:wled}
 
-% Se completa en su tarea del plan.
+Una ESP32 recién grabada no sabe cuántos LED tiene ni en qué pines. La forma más rápida y segura de configurarla es subir la plantilla \texttt{cfg-plantilla.json} que se entrega (anexo~\ref{anx:cfg}). La plantilla deja:
+
+\begin{itemize}
+\item Dos salidas \dato{tipoLed} (tipo WLED \dato{wledTipoLed}) de \dato{ledsPorCara} LED cada una: cara A en GPIO\dato{pinesPosteActual.caraA} con \dato{driverCaraA} y cara B en GPIO\dato{pinesPosteActual.caraB} con \dato{driverCaraB}.
+\item La red propia «\dato{redPropiaSsid}» siempre activa en \texttt{\dato{redPropiaIp}}, sin red de casa.
+\item El límite de corriente apagado (se fija después desde LUMA, capítulo~\ref{cap:consumo}).
+\end{itemize}
+
+\pendiente{pinesConfirmados}{La plantilla usa los pines del poste que funciona hoy (\dato{pinesPosteActual.caraA} y \dato{pinesPosteActual.caraB}). Si al comprobar la placa (sección~\ref{sec:comprobar-pin}) los datos llegan por otros GPIO, cámbialos en «LED \& Hardware» antes de seguir.}
+
+\section{Subir la plantilla}
+
+\begin{enumerate}
+\item Con la ESP32 recién grabada encendida, une el teléfono o el computador a la red \textbf{WLED-AP} (contraseña \texttt{wled1234}).
+\item Abre \texttt{http://4.3.2.1}. Aparece la interfaz de WLED.
+\item Entra en \textbf{Config} › \textbf{Security \& Updates}.
+\item En «Backup \& Restore», en \textbf{Restore configuration}, elige \texttt{cfg-plantilla.json} y pulsa \textbf{Upload}.
+\item \textbf{Corta la corriente} de la ESP32 (desconecta el USB o los 12~V), espera 5 segundos y vuelve a conectarla.
+\end{enumerate}
+
+\advertencia{Después de cambiar la configuración de LED, reinicia siempre cortando la corriente. En este poste se vio que el reinicio por software a veces no aplica los cambios: WLED lee \texttt{cfg.json} al arrancar.}
+
+Resultado esperado: ya no aparece «WLED-AP» sino «\dato{redPropiaSsid}».
+
+\section{Cambiar la contraseña de la red propia}
+
+La plantilla no lleva contraseñas: WLED las guarda aparte y la red propia conserva la de fábrica (\texttt{wled1234}) hasta que la cambies.
+
+\begin{enumerate}
+\item Une el teléfono a «\dato{redPropiaSsid}» con la contraseña \texttt{wled1234}.
+\item Abre \texttt{http://\dato{redPropiaIp}} › \textbf{Config} › \textbf{WiFi \& Network}.
+\item En «AP password» escribe una contraseña nueva de 8 caracteres o más y guarda.
+\item Corta la corriente y vuelve a conectarla. Únete con la contraseña nueva.
+\end{enumerate}
+
+Anota que la contraseña se cambió en la hoja de verificación, pero \textbf{no} escribas la contraseña en la hoja. Entrégala al dueño del poste por un canal privado.
+
+\nota{También se puede cambiar desde LUMA, en «Mi montaje» › «Wi-Fi del poste» › «Configurar para funcionar solo», una vez instalada la app (capítulo~\ref{cap:instalar}).}
+
+\section{Comprobar las salidas de LED}
+
+En \textbf{Config} › \textbf{LED \& Hardware} debe verse lo siguiente. El selector «Driver» de cada salida solo aparece al marcar \textbf{Show Advanced Settings}.
+
+\begin{tabularx}{\linewidth}{@{}l X X@{}}
+\toprule
+\textbf{Ajuste} & \textbf{Salida 1 · cara A} & \textbf{Salida 2 · cara B} \\ \midrule
+Tipo & WS281x & WS281x \\
+Orden de color & RGB & RGB \\
+Inicio & 0 & \dato{ledsPorCara} \\
+Longitud & \dato{ledsPorCara} & \dato{ledsPorCara} \\
+GPIO & \dato{pinesPosteActual.caraA} & \dato{pinesPosteActual.caraB} \\
+Driver & RMT & I2S \\
+\bottomrule
+\end{tabularx}
+
+Total de LED: \dato{ledsTotal}. Si cambias algo aquí, guarda y corta la corriente.
+
+\advertencia{Con las dos salidas en RMT, este firmware solo envía datos por la primera: la cara B queda apagada aunque todo lo demás esté bien. La segunda salida debe usar el driver I2S. Este fue el origen de horas de diagnóstico en el primer poste: no es una falla de la placa ni del pin.}
+
+\pendiente{capturasWled}{Capturas de las pantallas de WLED («Security \& Updates», «WiFi \& Network» y «LED \& Hardware») tomadas en un poste configurado. Se agregan en \texttt{img/wled/} la próxima vez que haya un poste a mano.}
+
+\nota{\textbf{Variante de 200 píxeles por cara.} Cambia la longitud de cada salida a 200, el inicio de la salida 2 a 200 y verifica que el total sea 400. El consumo se duplica (capítulo~\ref{cap:consumo}); en LUMA, «Mi montaje» ofrece el montaje «Poste completo» (400 píxeles, 200 por cara).}
+
+\section{Si el poste debe conectarse a otra red}
+
+El poste funciona solo, con su red propia. Si además se quiere unir a una red Wi-Fi con internet (para que mantenga la hora tras un corte de luz), añádela en \textbf{WiFi \& Network}. Ten en cuenta:
+\begin{itemize}
+\item La ESP32 solo usa redes de \textbf{2,4~GHz}; no ve redes de 5~GHz.
+\item Si el poste busca una red que no encuentra, su red propia se vuelve inestable. Quita la red cuando deje de estar disponible.
+\end{itemize}
