@@ -1,3 +1,51 @@
 \chapter{Cómo habla LUMA con WLED}\label{cap:contrato}
 
-% Se completa en su tarea del plan.
+LUMA solo usa la interfaz pública de WLED: no modifica el firmware. Toda la comunicación pasa por \texttt{request()} en \texttt{src/lib/wled.js}, que añade el PIN de ajustes cuando existe, corta a los 6 segundos y traduce los errores a mensajes en español.
+
+\section{Puntos de acceso usados}
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.24\linewidth} >{\raggedright\arraybackslash}p{0.2\linewidth} >{\raggedright\arraybackslash}p{0.5\linewidth}@{}}
+\toprule
+\textbf{Ruta} & \textbf{Dónde} & \textbf{Para qué} \\ \midrule \endhead
+\texttt{GET /json} & \texttt{connectWled} & Estado, información, lista de efectos y paletas al conectar. Se rechaza si no trae \texttt{info.leds}, \texttt{effects} y \texttt{state.seg}. \\
+\texttt{GET /json/fxdata} & \texttt{connectWled} & Valores por defecto de cada efecto (los mismos que usa la interfaz de WLED). Opcional. \\
+\texttt{POST /json/state} & \texttt{sendScene}, \texttt{applyWled} & Enviar la escena: encendido, brillo general, transición y un segmento por tramo (\texttt{fx}, \texttt{sx}, \texttt{ix}, \texttt{pal}, \texttt{col}, \texttt{rev}, \texttt{mi}, \texttt{start}, \texttt{stop}). También \texttt{ps} (aplicar preset) y \texttt{time} (dar la hora). \\
+\texttt{GET /json/state} & \texttt{applyWled} & Releer el estado para confirmar que el poste aceptó todo. \\
+\texttt{GET /json/info} & \texttt{setLedCount} & Comprobar la cantidad de LED después de cambiarla. \\
+\texttt{GET/POST /json/cfg} & \texttt{controller.js}, \texttt{setLedCount} & Salidas de LED (\texttt{hw.led.ins}), límite de corriente (\texttt{hw.led.maxpwr}), preset de encendido (\texttt{def.ps}), hora y ubicación (\texttt{if.ntp}), temporizadores (\texttt{timers.ins}) y Wi-Fi propio (\texttt{nw}, \texttt{ap}). \\
+\texttt{GET /presets.json} & \texttt{readPresets} & Leer las escenas guardadas en el poste. \\
+\texttt{POST /upload} & \texttt{writePresets}, instalador & Subir \texttt{presets.json} completo y los archivos de la app. \\
+\texttt{WS /ws} & \texttt{live-preview.js} & Envía \texttt{\{"lv":true\}} y recibe cuadros Peek: bytes \texttt{76, 1} seguidos de R, G, B de cada LED. \\
+\bottomrule
+\end{longtable}
+
+\section{Qué se verifica}
+
+\begin{itemize}
+\item \textbf{Al conectar:} que la dirección sea solo \texttt{http://ip} (sin rutas ni usuario) y que responda un WLED.
+\item \textbf{Al aplicar con verificación} (\texttt{applyWled}): que el poste no esté en control en tiempo real (\texttt{info.live}); después del envío, relee \texttt{/json/state} y compara encendido, brillo, transición y, por segmento, inicio, fin, efecto, brillo, velocidad, intensidad, paleta, dirección, espejo y colores. Si algo no coincide, avisa (normalmente hay una lista de reproducción u otro control activo).
+\item \textbf{En vivo} (\texttt{sendScene}): se envía sin releer, como máximo unas cinco veces por segundo, para que la edición sea fluida.
+\item \textbf{Al cambiar la cantidad de LED} (\texttt{setLedCount}): conserva pin, tipo, orden de color, driver y límites de cada salida; reparte el total entre las salidas y espera hasta 4 segundos a que \texttt{/json/info} confirme el nuevo número.
+\item \textbf{Al cambiar el límite de corriente} (\texttt{setCurrentLimit}): con dos salidas, el límite va al global y cada salida queda en 0, conservando su driver.
+\end{itemize}
+
+\section{Errores que muestra LUMA}
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.47\linewidth} >{\raggedright\arraybackslash}p{0.48\linewidth}@{}}
+\toprule
+\textbf{Mensaje} & \textbf{Causa} \\ \midrule \endhead
+«No se pudo comunicar con el poste…» & Sin respuesta en 6~s: otra red, dirección errada o poste apagado. \\
+«Este poste está protegido con un PIN de ajustes…» & WLED respondió 401. \\
+«El firmware del poste no incluye el efecto…» & El efecto no existe en esa versión de WLED. \\
+«El poste recibió la solicitud, pero no confirmó todos los cambios…» & Otro control (lista de reproducción, otra app) cambió el estado. \\
+«Configura primero dos segmentos en el controlador…» & La configuración de LED de WLED no coincide con el montaje elegido. \\
+\bottomrule
+\end{longtable}
+
+\section{Documentación oficial}
+
+\begin{itemize}
+\item API JSON de WLED: \url{https://kno.wled.ge/interfaces/json-api/}
+\item WebSocket y Peek: \url{https://kno.wled.ge/interfaces/websocket/}
+\item Presets y listas de reproducción: \url{https://kno.wled.ge/features/presets/}
+\end{itemize}

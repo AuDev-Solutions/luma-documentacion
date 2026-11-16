@@ -1,3 +1,82 @@
 \chapter{Cambios comunes en el código}\label{cap:cambios}
 
-% Se completa en su tarea del plan.
+Cada receta termina igual: probar, empaquetar y subir al poste.
+
+\begin{comando}
+npm test
+npm run build:poste
+npm run instalar:poste -- 4.3.2.1
+\end{comando}
+
+Durante el cambio, \texttt{npm run dev} muestra la app en \texttt{http://localhost:5174} y la recarga sola al guardar (capítulo~\ref{cap:desarrollo}).
+
+\section{Añadir un efecto}
+
+Los efectos están en \texttt{src/lib/scenes.js}, en la lista \texttt{effects}. Cada uno usa un efecto que ya existe en WLED; LUMA solo le pone nombre, colores y ajustes iniciales. Ejemplo real:
+
+\begin{codigo}
+{ id: 'fire', name: 'Fuego ámbar', description: 'Llamas cálidas desde la base',
+  wled: 'Fire 2012', category: 'Movimiento', colors: ['#ff2909', '#ffcf50'],
+  speed: 28, brightness: 60, intensity: 160, palette: 'fire', featured: true,
+  speedLabel: 'Enfriamiento', intensityLabel: 'Chispas' },
+\end{codigo}
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.24\linewidth} >{\raggedright\arraybackslash}p{0.71\linewidth}@{}}
+\toprule
+\textbf{Campo} & \textbf{Significado} \\ \midrule \endhead
+\texttt{id} & Identificador interno único. No lo cambies en efectos existentes: las escenas guardadas lo usan. \\
+\texttt{name}, \texttt{description} & Lo que ve el usuario en la galería. \\
+\texttt{wled} & Nombre exacto del efecto en WLED (lista en \texttt{http://4.3.2.1/json/eff}). \\
+\texttt{aliases} & Nombres alternativos si otra versión de WLED lo llama distinto (opcional). \\
+\texttt{category} & Una de: Calma, Movimiento, Destellos, Fiesta. \\
+\texttt{colors} & Color principal y de fondo iniciales, en hexadecimal. \\
+\texttt{speed}, \texttt{brightness} & Velocidad y brillo iniciales, de 0 a 100. \\
+\texttt{intensity} & Valor inicial del segundo control, en la escala de WLED (0--255). \\
+\texttt{palette} & Paleta inicial: una clave de \texttt{palettes.js} (opcional). \\
+\texttt{featured} & \texttt{true} lo muestra en «Selección». \\
+\texttt{speedLabel}, \texttt{intensityLabel} & Nombre de los controles. \texttt{intensityLabel: null} oculta el segundo control si el efecto no lo usa. \\
+\texttt{static}, \texttt{singleColor}, \texttt{darkBackground} & Sin velocidad; un solo color; fondo siempre negro. \\
+\bottomrule
+\end{longtable}
+
+\nota{La vista previa de un efecto nuevo es estática hasta que se le añade un \texttt{case} con su \texttt{id} en la función \texttt{pixelColor} del mismo archivo. Con el poste conectado no hace falta: la vista «En vivo» muestra lo que hace WLED.}
+
+\section{Añadir un tema}
+
+Los temas están en \texttt{src/lib/themes.js}. Un tema reparte el poste en bandas, cada una con un efecto de la lista. Ejemplo real (dos bandas, de abajo hacia arriba):
+
+\begin{codigo}
+{ id: 'amor', name: 'Amor y amistad', description: 'Latido rosa y rojo',
+  swatch: ['#ff2d55', '#ff7ab8', '#000000'],
+  build: (total, layout) => build(total, [
+    [0.5, design('heartbeat'), 'Base'],
+    [0.5, design('heartbeat', { colors: ['#ff7ab8', '#000000'] }), 'Copa'],
+  ], layout) },
+\end{codigo}
+
+Cada banda es \texttt{[fracción del poste, diseño, nombre]}; las fracciones suman 1. \texttt{design(id, cambios)} toma un efecto de \texttt{scenes.js} y le cambia lo que indiques. \texttt{swatch} son los tres colores de la tarjeta. La prueba de \texttt{tests/controller-features.test.js} construye todos los temas para 50, 100, 200 y 400 LED: si un tema no cuadra, \texttt{npm test} falla.
+
+\section{Añadir una paleta}
+
+Las paletas son las de WLED; en \texttt{src/lib/palettes.js} solo se les da nombre y una aproximación para la vista previa:
+
+\begin{codigo}
+{ id: 'lava', name: 'Lava', wled: 'Lava', fallback: 8,
+  stops: stops('#000000', '#800000', '#ff0000', '#ffa500', '#fff2c0', '#ff0000', '#800000') },
+\end{codigo}
+
+\texttt{wled} es el nombre exacto en WLED (lista en \texttt{http://4.3.2.1/json/pal}), \texttt{fallback} su número en WLED 17 y \texttt{stops} los colores para dibujar la vista previa.
+
+\section{Cambiar textos visibles}
+
+Los textos están escritos directamente en los componentes de \texttt{src/components/} y en \texttt{App.jsx}. Búscalos con el buscador de VS Code (Ctrl+Shift+F) y cámbialos ahí. Si cambias el texto de un botón, revisa también \texttt{tests/e2e/app.e2e.mjs} y \texttt{scripts/capturas-manual.mjs}, que encuentran los botones por su nombre.
+
+\section{Cambiar colores o tipografía}
+
+Los colores principales de la interfaz son variables CSS en la regla \texttt{:root} de \texttt{src/styles.css} (\texttt{-{}-lime}, \texttt{-{}-surface}, \texttt{-{}-border}, \texttt{-{}-muted}). Las fuentes (DM Sans y Manrope) se cargan en \texttt{src/main.jsx}.
+
+\section{Si cambian el número de LED o de caras}
+
+Los montajes están en \texttt{src/lib/mounts.js}. Para un montaje nuevo añade una entrada con \texttt{total}, \texttt{count} (LED por cara) y \texttt{faceCount}, y comprueba que \texttt{buildPayload} en \texttt{wled.js} acepte ese \texttt{count} (hoy 50, 100 o 200). Configura además las salidas en WLED (capítulo~\ref{cap:wled}).
+
+\advertencia{No cambies los números de los presets reservados (248, 249 y 250 en \texttt{controller.js}): los postes ya instalados los tienen guardados con esos números.}

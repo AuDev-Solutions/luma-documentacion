@@ -1,3 +1,60 @@
 \chapter{Desarrollo y pruebas}\label{cap:desarrollo}
 
-% Se completa en su tarea del plan.
+\section{Comandos}
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.34\linewidth} >{\raggedright\arraybackslash}p{0.61\linewidth}@{}}
+\toprule
+\textbf{Comando} & \textbf{Qué hace} \\ \midrule \endhead
+\texttt{npm install} & Instala las dependencias (una vez, y cada vez que cambie \texttt{package.json}). \\
+\texttt{npm run dev} & Servidor de desarrollo en \texttt{http://localhost:5174}; recarga al guardar. También accesible desde el teléfono en la misma red, con la IP del computador. \\
+\texttt{npm start} & Compila y sirve la versión final en \texttt{http://localhost:5173}. \\
+\texttt{npm test} & 40 pruebas de lógica: adaptador de WLED, segmentos, paletas, presets, horario, límites, temas, montajes y vista en vivo. Tarda segundos. \\
+\texttt{npm run test:e2e} & 9 recorridos completos en Chromium contra un poste simulado. Necesita Chrome o el Chromium de Playwright; si no lo encuentra, indica su ruta en la variable \texttt{LUMA\_CHROME}. \\
+\texttt{npm run build:poste} & Empaqueta la app para el poste (capítulo~\ref{cap:instalar}). \\
+\texttt{npm run instalar:poste -{}- <ip>} & Sube la app al poste. \\
+\texttt{npm run capturas:manual} & Vuelve a tomar las capturas de este manual. \\
+\bottomrule
+\end{longtable}
+
+\nota{Para probar con un poste real desde \texttt{npm run dev}, el computador debe estar en la red del poste. Pulsa «Conectar poste» y escribe \texttt{4.3.2.1}.}
+
+\section{Antes de subir un cambio a un poste}
+
+\begin{enumerate}
+\item \texttt{npm test}: todas pasan.
+\item \texttt{npm run test:e2e}: todas pasan.
+\item Prueba manual con un poste (o uno de banco): conectar, cambiar color, un efecto, guardar una escena en el poste y cortar la corriente para ver que arranca con ella.
+\item \texttt{npm run build:poste} e \texttt{instalar:poste}.
+\end{enumerate}
+
+\section{Flujo con Git y GitHub}
+
+Cada cambio se hace en una rama, se revisa y se une a \texttt{main}. Lo que está en \texttt{main} es lo que se instala en los postes.
+
+\begin{comando}
+git checkout main
+git pull
+git checkout -b cambio/nuevo-tema
+# ... editar, npm test ...
+git add src/lib/themes.js
+git commit -m "Tema nuevo: Fin de año"
+git push -u origin cambio/nuevo-tema
+\end{comando}
+
+Luego, en GitHub, abre un \emph{pull request} de la rama hacia \texttt{main}, revísalo y únelo. Después, en el computador:
+\begin{comando}
+git checkout main
+git pull
+\end{comando}
+
+\nota{Anota en el mensaje de cada commit qué cambia para el usuario. Cuando se instala una versión en un poste, conviene etiquetarla (\texttt{git tag poste-2026-12-01} y \texttt{git push -{}-tags}) para saber qué versión tiene cada poste.}
+
+\section{Las pruebas como documentación}
+
+Cuando no esté claro qué debe hacer una función, lee su prueba. Algunas útiles:
+\begin{itemize}
+\item \texttt{tests/controller.test.js}: cómo se traduce una escena al JSON de WLED.
+\item \texttt{tests/wled-parity.test.js}: comportamientos que imitan la interfaz original de WLED (segmento seleccionado, valores de \texttt{fxdata}, paletas por nombre).
+\item \texttt{tests/controller-features.test.js}: presets, modo automático, horario, hora, límite de corriente, Wi-Fi y temas.
+\item \texttt{tests/e2e/mock-pole.mjs}: un poste WLED simulado; sirve para entender qué responde el poste a cada petición.
+\end{itemize}
