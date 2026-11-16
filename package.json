@@ -9,6 +9,9 @@
     "kicad": "node scripts/exportar-kicad.mjs",
     "firmware": "node scripts/firmware.mjs",
     "pdf": "node scripts/compilar.mjs",
-    "test": "node --test --test-concurrency=1 tests/*.test.mjs"
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "capturas": "npm --prefix ../luma-app run build:poste && npm --prefix ../luma-app run capturas:manual",
+    "entregables": "node scripts/entregables.mjs",
+    "todo": "npm run datos && npm run kicad && npm run capturas && npm run pdf && npm test && npm run entregables"
   }
 }

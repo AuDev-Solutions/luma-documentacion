@@ -1,0 +1,50 @@
+% Contenido de la hoja de verificación: lo usan hoja-verificacion.tex (PDF de una página) y el anexo D.
+\providecommand{\casilla}{\raisebox{-0.15ex}{\Large$\square$}}
+\providecommand{\linea}[1]{\underline{\makebox[#1]{}}}
+
+{\sffamily\Large\bfseries \dato{producto} · Hoja de verificación del poste}\par\smallskip
+{\small Una hoja por poste. Se llena al terminar la prueba de aceptación (capítulo «Prueba de aceptación del poste» del manual). Se marca con una \casilla\ cada punto cumplido.}
+
+\medskip
+\noindent\begin{tabularx}{\linewidth}{@{}l X l X@{}}
+Poste N.º & \linea{4cm} & Fecha & \linea{4cm} \\[6pt]
+Técnico & \linea{4cm} & Ubicación & \linea{4cm} \\
+\end{tabularx}
+
+\medskip
+{\renewcommand{\arraystretch}{1.55}\noindent\begin{tabularx}{\linewidth}{@{}c >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{0.3\linewidth}@{}}
+\toprule
+ & \textbf{Comprobación} & \textbf{Anotar} \\ \midrule
+\multicolumn{3}{@{}l}{\sffamily\bfseries Placa y alimentación} \\
+\casilla & Sin corto entre +12~V y GND en las borneras & \\
+\casilla & Salida del LM2596 medida antes de poner la ESP32 & \linea{1.6cm}~V \\
+\casilla & Fusibles F1, F2, F6, F7 y fusible externo puestos & Valores: \linea{2.2cm} \\
+\multicolumn{3}{@{}l}{\sffamily\bfseries Firmware y red} \\
+\casilla & Firmware WLED \dato{wledVersion} grabado & \\
+\casilla & \texttt{cfg-plantilla.json} subido y corriente cortada después & \\
+\casilla & Red propia «\dato{redPropiaSsid}» visible (no «WLED-AP») & \\
+\casilla & Contraseña de la red propia cambiada (no se escribe aquí) & \\
+\casilla & Salidas en «LED \& Hardware»: A en RMT, B en I2S, total \dato{ledsTotal} & GPIO A/B: \linea{1.8cm} \\
+\multicolumn{3}{@{}l}{\sffamily\bfseries Luces} \\
+\casilla & Cara A enciende completa (rojo, verde, azul) & \\
+\casilla & Cara B enciende completa (rojo, verde, azul) & \\
+\casilla & Blanco al 100~\%: el último píxel no se ve amarillento & Corriente: \linea{1.6cm}~A \\
+\multicolumn{3}{@{}l}{\sffamily\bfseries App LUMA} \\
+\casilla & LUMA abre en \texttt{http://\dato{redPropiaIp}} y muestra la vista en vivo & \\
+\casilla & Escena guardada en el poste y elegida al encender & Escena: \linea{2.2cm} \\
+\casilla & Tras cortar la corriente, arranca con esa escena & \\
+\casilla & Límite de corriente configurado en «Mi montaje» › «Consumo» & \linea{1.6cm}~A \\
+\multicolumn{3}{@{}l}{\sffamily\bfseries Seguridad y respaldo} \\
+\casilla & PIN de ajustes puesto y actualizaciones bloqueadas & \\
+\casilla & Copia de \texttt{cfg.json} y \texttt{presets.json} guardada & \\
+\casilla & Temperatura en la caja tras 30 min en blanco al 100~\% & \linea{1.6cm}~°C \\
+\bottomrule
+\end{tabularx}}
+
+\medskip
+\noindent Observaciones: \linea{0.82\linewidth}\par\medskip
+\noindent\linea{0.97\linewidth}\par\bigskip
+\noindent\begin{tabularx}{\linewidth}{@{}X X@{}}
+\linea{6.5cm} & \linea{6.5cm} \\
+Firma del técnico & Recibido por \\
+\end{tabularx}
