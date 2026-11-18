@@ -39,8 +39,8 @@ B2 & 1 \texttt{GPIO\_A} · 2 \texttt{GPIO\_B} · 3 \texttt{GPIO\_C} & Señales d
 \begin{description}[leftmargin=0pt]
 \item[LM1 · LM2596] Módulo reductor que baja los 12~V a \dato{reguladorSalida} para la ESP32 (red \texttt{+5V\_ESP}, pin 21 «5V» del módulo). Se ajusta con su potenciómetro antes de poner la ESP32 (capítulo~\ref{cap:ensamble}).
 \item[U1 · ESP32-S3] Se conecta por su pin 5V (21) y sus pines GND (22, 23, 24 y 44). La zona de la antena no tiene cobre en ninguna de las dos caras de la placa.
-\item[R1 y R2] Resistencias en serie entre la ESP32 y la línea de datos de cada cara (\texttt{GPIO\_A}→\texttt{D1}, \texttt{GPIO\_B}→\texttt{D2}).
-\item[C1 y C2] Condensadores electrolíticos en la alimentación de cada cara (C2 en \texttt{+12V\_A}, C1 en \texttt{+12V\_B}). Respeta la polaridad.
+\item[R1 y R2] Resistencias de 330~Ω en serie entre la ESP32 y la línea de datos de cada cara (\texttt{GPIO\_A}→\texttt{D1}, \texttt{GPIO\_B}→\texttt{D2}).
+\item[C1 y C2] Condensadores electrolíticos de 1000~µF en la alimentación de cada cara (C2 en \texttt{+12V\_A}, C1 en \texttt{+12V\_B}). Respeta la polaridad.
 \end{description}
 
 \section{Fusibles}

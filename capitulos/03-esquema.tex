@@ -32,7 +32,7 @@ Reserva (\texttt{GPIO\_C}) & --- & Pin 4 del módulo, GPIO\dato{pinesEsquema.GPI
 \item \textbf{Con la ESP32 soldada en una \dato{pcbVersion}}, los datos salen por GPIO\dato{pinesEsquema.GPIO_A} y GPIO\dato{pinesEsquema.GPIO_B}. Configura WLED con cara A en GPIO\dato{pinesEsquema.GPIO_A} (RMT) y cara B en GPIO\dato{pinesEsquema.GPIO_B} (I2S), las dos desde el LED 0 (sección~\ref{sec:salidas-wled}). LUMA no cambia los pines: solo lee los que tenga WLED.
 \item \textbf{Los pines del diseño son buenos.} GPIO\dato{pinesEsquema.GPIO_A}, GPIO\dato{pinesEsquema.GPIO_B} y GPIO\dato{pinesEsquema.GPIO_C} no son pines de arranque ni van al USB, a la memoria flash o a la PSRAM, y cualquiera de ellos puede usar el driver RMT o I2S. GPIO\dato{pinesPosteActual.caraB}, en cambio, es pin de arranque: funciona como dato, pero no lo fuerces a un nivel fijo con resistencias externas.
 \item \textbf{Nivel de la señal.} La ESP32 entrega 3,3~V y los WS2811 de 12~V esperan, en teoría, al menos 0,7 × 5~V. Funciona en las pruebas, pero queda al límite con cables largos o fríos. Para la próxima versión se recomienda un adaptador de nivel 74AHCT125 (o 74HCT125) alimentado a 5~V entre la ESP32 y R1/R2.
-\item \textbf{R1 y R2} no tienen valor en el esquema. Lo usual es 220 a 470~Ω, puestas cerca del pin que envía la señal.
+\item \textbf{R1 y R2} son de 330~Ω en el poste que funciona (el esquema no guarda el valor). Van cerca del pin que envía la señal.
 \item La huella del módulo en la \dato{pcbVersion} es la de la DevKitC oficial de Espressif. Si se suelda la ESP32 en la placa, compara antes el orden de sus pines con esa huella.
 \end{itemize}
 

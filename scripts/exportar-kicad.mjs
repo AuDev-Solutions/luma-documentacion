@@ -18,8 +18,8 @@ const componentes = {
   Screw_Terminal_01x02: 'Bornera de 2 polos, paso 7,5 mm',
   ALIMENTACION1: 'Bornera de 2 polos, paso 7,5 mm (alimentación LM2596 e inyección)',
   ALIMENTACION2: 'Bornera de 2 polos, paso 7,5 mm (alimentación de las caras)',
-  C_Polarized_Small: 'Condensador electrolítico radial 10 mm (valor por confirmar)',
-  R: 'Resistencia 1/4 W axial (valor por confirmar)',
+  C_Polarized_Small: 'Condensador electrolítico radial 10 mm, 1000 µF (16 V o más)',
+  R: 'Resistencia 1/4 W axial de 330 Ω',
 };
 // Lo que se compró para el poste (pedidos de Electronilab y Dualtronica, noviembre de 2026).
 const proveedores = {

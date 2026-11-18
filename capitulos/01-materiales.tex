@@ -6,7 +6,7 @@ Un poste lleva la placa \dato{pcbVersion} con sus componentes, la fuente, las do
 
 \input{build/bom.tex}
 
-\nota{El esquema no guarda el valor de R1, R2, C1 y C2 (aparecen como «R» y «C\_Polarized\_Small»). Tampoco están en los pedidos: toma el valor de las piezas que tiene la placa del poste que funciona. Lo usual es 220 a 470~Ω para R1 y R2 (sección~\ref{sec:pines}).}
+\nota{El esquema no guarda el valor de R1, R2, C1 y C2 (aparecen como «R» y «C\_Polarized\_Small»). En el poste que funciona, R1 y R2 son de 330~Ω y C1 y C2 de 1000~µF. Como C1 y C2 están en la línea de 12~V, deben ser de 16~V o más (mejor de 25~V).}
 
 \section{Materiales fuera de la placa}
 
@@ -41,4 +41,4 @@ Regla de PCB para electrónica, SMD, 10~cm & Electronilab \\
 \bottomrule
 \end{longtable}
 
-\pendiente{listaCompra}{Valor de R1, R2, C1 y C2, que no aparecen en los pedidos, y el cable y la clavija de la entrada de 120~V.}
+\pendiente{listaCompra}{El cable y la clavija de la entrada de 120~V.}
