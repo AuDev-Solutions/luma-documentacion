@@ -9,7 +9,7 @@ Una ESP32 recién grabada no sabe cuántos LED tiene ni en qué pines. La forma 
 \item El límite de corriente apagado (se fija después desde LUMA, capítulo~\ref{cap:consumo}).
 \end{itemize}
 
-\pendiente{pinesConfirmados}{La plantilla usa los pines del poste que funciona hoy (\dato{pinesPosteActual.caraA} y \dato{pinesPosteActual.caraB}). La \dato{pcbVersion} lleva los datos a GPIO\dato{pinesEsquema.GPIO_A} (cara A) y GPIO\dato{pinesEsquema.GPIO_B} (cara B), sección~\ref{sec:pines}. Comprueba la placa (sección~\ref{sec:comprobar-pin}) y, si los datos llegan por otros GPIO, cámbialos en «LED \& Hardware» antes de seguir, dejando la cara B en I2S.}
+\nota{La plantilla usa los pines confirmados del poste que funciona: GPIO\dato{pinesPosteActual.caraA} (cara A) y GPIO\dato{pinesPosteActual.caraB} (cara B). Si la ESP32 va soldada en una \dato{pcbVersion}, los datos salen por GPIO\dato{pinesEsquema.GPIO_A} y GPIO\dato{pinesEsquema.GPIO_B}: cámbialos en «LED \& Hardware» antes de seguir, dejando la cara B en I2S (sección~\ref{sec:pines}).}
 
 \section{Subir la plantilla}
 

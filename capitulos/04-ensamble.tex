@@ -45,7 +45,9 @@ Resultado esperado: todos los componentes menos la ESP32 en su lugar.
 
 \advertencia{No conectes al mismo tiempo el USB de la ESP32 y la alimentación del LM2596. Espressif indica que alimentar por USB y por el pin 5V son opciones excluyentes. Para grabar o depurar por USB, desconecta primero los 12~V de la placa.}
 
-\foto{esp-instalada}{ESP32-S3 instalada en la placa, con la antena y los dos USB-C visibles.}{0.7}
+\nota{En el poste que funciona, la ESP32-S3 no va soldada: va en una placa de borneras aparte (figura~\ref{foto:esp-instalada}). Cuatro cables la unen a la placa: 5~V y GND desde la bornera de 5~V, y GPIO\dato{pinesPosteActual.caraA} y GPIO\dato{pinesPosteActual.caraB} hasta la bornera de datos B2. Así se cambia la ESP32 sin desoldar nada.}
+
+\foto{esp-instalada}{ESP32-S3 DevKitC N16R8 en su placa de borneras, en el poste que funciona: los dos USB-C a la izquierda y la antena a la derecha. Arriba, los cables de 5~V y GND (rojo y café, a la izquierda) y los de datos, GPIO\dato{pinesPosteActual.caraB} (verde) y GPIO\dato{pinesPosteActual.caraA} (naranja).}{0.6}
 
 \section{Comprobaciones finales sin carga}
 

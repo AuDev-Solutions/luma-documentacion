@@ -16,29 +16,25 @@
 
 \section{Pines de datos}\label{sec:pines}
 
-En el proyecto existen tres versiones de qué pin de la ESP32 lleva los datos de cada cara:
+Los pines de datos del poste que funciona están \textbf{confirmados}: la cara A sale por GPIO\dato{pinesPosteActual.caraA} (\dato{driverCaraA}) y la cara B por GPIO\dato{pinesPosteActual.caraB} (\dato{driverCaraB}). Se comprobó en la placa (figura~\ref{foto:esp-instalada}) y con las dos caras funcionando.
 
-\begin{tabularx}{\linewidth}{@{}l X X X@{}}
+\begin{tabularx}{\linewidth}{@{}l X X@{}}
 \toprule
-\textbf{Señal} & \textbf{Esquema de KiCad (PCB\_V2)} & \textbf{Nota del proyecto (LEEME)} & \textbf{Poste funcionando hoy} \\ \midrule
-Datos cara A & \texttt{GPIO\_A} → pin 6 del módulo (GPIO\dato{pinesEsquema.GPIO_A}) & GPIO4 & GPIO\dato{pinesPosteActual.caraA}, \dato{driverCaraA} \\
-Datos cara B & \texttt{GPIO\_B} → pin 5 del módulo (GPIO\dato{pinesEsquema.GPIO_B}) & GPIO5 & GPIO\dato{pinesPosteActual.caraB}, \dato{driverCaraB} \\
-Reserva & \texttt{GPIO\_C} → pin 4 del módulo (GPIO\dato{pinesEsquema.GPIO_C}) & GPIO7 & --- \\
+\textbf{Señal} & \textbf{Poste que funciona} & \textbf{ESP32 soldada en la \dato{pcbVersion}} \\ \midrule
+Datos cara A (\texttt{GPIO\_A}) & GPIO\dato{pinesPosteActual.caraA}, \dato{driverCaraA} & Pin 6 del módulo, GPIO\dato{pinesEsquema.GPIO_A} \\
+Datos cara B (\texttt{GPIO\_B}) & GPIO\dato{pinesPosteActual.caraB}, \dato{driverCaraB} & Pin 5 del módulo, GPIO\dato{pinesEsquema.GPIO_B} \\
+Reserva (\texttt{GPIO\_C}) & --- & Pin 4 del módulo, GPIO\dato{pinesEsquema.GPIO_C} \\
 \bottomrule
 \end{tabularx}
 
-Revisión del diseño final (esquema y trazado de la \dato{pcbVersion}, que coinciden entre sí):
 \begin{itemize}
-\item \textbf{Los pines del diseño son buenos.} GPIO\dato{pinesEsquema.GPIO_A}, GPIO\dato{pinesEsquema.GPIO_B} y GPIO\dato{pinesEsquema.GPIO_C} no son pines de arranque ni van al USB, a la memoria flash o a la PSRAM, y cualquiera de ellos puede usar el driver RMT o I2S.
-\item \textbf{El poste que funciona no está cableado como la \dato{pcbVersion}.} Sus datos salen por GPIO\dato{pinesPosteActual.caraA} y GPIO\dato{pinesPosteActual.caraB} (pines \dato{padsPosteActual.caraA} y \dato{padsPosteActual.caraB} del módulo), y en el trazado de la \dato{pcbVersion} esos dos pines no están conectados a nada. Antes de montar una placa nueva, comprueba con continuidad a qué GPIO llega cada cara (sección~\ref{sec:comprobar-pin}).
-\item \textbf{Con una \dato{pcbVersion} fabricada}, configura WLED con cara A en GPIO\dato{pinesEsquema.GPIO_A} (RMT) y cara B en GPIO\dato{pinesEsquema.GPIO_B} (I2S), las dos desde el LED 0 (sección~\ref{sec:salidas-wled}). LUMA no cambia los pines: solo lee los que tenga WLED.
-\item \textbf{La nota LEEME del proyecto de KiCad está desactualizada} (dice GPIO4 y GPIO5). Manda el esquema.
+\item \textbf{Cómo está armado el poste que funciona.} La ESP32-S3 no va soldada en la placa: va en una placa de borneras aparte y se une con cables a la placa de potencia. GPIO\dato{pinesPosteActual.caraB} (cable verde) y GPIO\dato{pinesPosteActual.caraA} (cable naranja) llegan a la bornera de datos B2, de donde pasan por R1 y R2 a las caras; otros dos cables llevan 5~V y GND. Por eso los pines del poste no coinciden con los del trazado: los fija el cableado hasta B2, no la placa.
+\item \textbf{Con la ESP32 soldada en una \dato{pcbVersion}}, los datos salen por GPIO\dato{pinesEsquema.GPIO_A} y GPIO\dato{pinesEsquema.GPIO_B}. Configura WLED con cara A en GPIO\dato{pinesEsquema.GPIO_A} (RMT) y cara B en GPIO\dato{pinesEsquema.GPIO_B} (I2S), las dos desde el LED 0 (sección~\ref{sec:salidas-wled}). LUMA no cambia los pines: solo lee los que tenga WLED.
+\item \textbf{Los pines del diseño son buenos.} GPIO\dato{pinesEsquema.GPIO_A}, GPIO\dato{pinesEsquema.GPIO_B} y GPIO\dato{pinesEsquema.GPIO_C} no son pines de arranque ni van al USB, a la memoria flash o a la PSRAM, y cualquiera de ellos puede usar el driver RMT o I2S. GPIO\dato{pinesPosteActual.caraB}, en cambio, es pin de arranque: funciona como dato, pero no lo fuerces a un nivel fijo con resistencias externas.
 \item \textbf{Nivel de la señal.} La ESP32 entrega 3,3~V y los WS2811 de 12~V esperan, en teoría, al menos 0,7 × 5~V. Funciona en las pruebas, pero queda al límite con cables largos o fríos. Para la próxima versión se recomienda un adaptador de nivel 74AHCT125 (o 74HCT125) alimentado a 5~V entre la ESP32 y R1/R2.
 \item \textbf{R1 y R2} no tienen valor en el esquema. Lo usual es 220 a 470~Ω, puestas cerca del pin que envía la señal.
-\item La huella del módulo es la de la DevKitC oficial de Espressif. El orden de los pines de la placa que se compra (WIF0036) no está comprobado contra esa huella.
+\item La huella del módulo en la \dato{pcbVersion} es la de la DevKitC oficial de Espressif. Si se suelda la ESP32 en la placa, compara antes el orden de sus pines con esa huella.
 \end{itemize}
-
-\pendiente{pinesConfirmados}{Qué GPIO lleva realmente los datos de cada cara en la placa fabricada. El esquema, la nota del proyecto y el poste que funciona no coinciden. En el poste que funciona se comprobó además que el camino de la placa hacia GPIO18 no da señal y que la cara B solo funciona en GPIO3 con el driver I2S. Hasta confirmarlo, configura WLED con los pines del poste que funciona (\dato{pinesPosteActual.caraA} y \dato{pinesPosteActual.caraB}) y comprueba la placa con el procedimiento de la sección~\ref{sec:comprobar-pin}.}
 
 \section{Cómo comprobar el pin en una placa}\label{sec:comprobar-pin}
 

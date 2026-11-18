@@ -16,7 +16,7 @@
   "driverCaraB": "I2S (drv: 1)",
   "pinesEsquema": { "GPIO_A": 6, "GPIO_B": 5, "GPIO_C": 4 },
   "padsPosteActual": { "caraA": 10, "caraB": 13 },
-  "pinesConfirmados": null,
+  "pinesConfirmados": "GPIO17 (cara A) y GPIO3 (cara B), comprobados en el poste que funciona",
   "wledVersion": "17.0.0-devV5",
   "wledCommit": "961961fd",
   "wledEntorno": "esp32s3dev_16MB_opi",
