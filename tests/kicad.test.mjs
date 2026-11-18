@@ -17,8 +17,8 @@ test('la lista de materiales incluye la ESP32 con su proveedor', () => {
   assert.match(u1, /Electronilab/);
 });
 
-test('la fila de fusibles avisa que F5 no protege, aunque venga en un rango', () => {
-  assert.match(filas.find(fila => fila.includes('F5')), /NO PROTEGE/);
+test('la fila de fusibles avisa de las placas viejas con F5 puenteado, aunque venga en un rango', () => {
+  assert.match(filas.find(fila => fila.includes('F5')), /F5 no protege/);
 });
 
 test('un componente sin proveedor conocido queda por confirmar', () => {

@@ -78,7 +78,7 @@
 \tcbset{lumabase/.style={enhanced, breakable, boxrule=0pt, leftrule=4pt, arc=2pt, left=8pt, right=8pt, top=6pt, bottom=6pt, fonttitle=\sffamily\bfseries\small, coltitle=white}}
 \newtcolorbox{cajaadvertencia}{lumabase, colback=rojoaviso!6, colframe=rojoaviso, detach title, before upper={\textcolor{rojoaviso}{\sffamily\bfseries ADVERTENCIA}\quad}}
 \newtcolorbox{cajanota}{lumabase, colback=azulnota!6, colframe=azulnota, detach title, before upper={\textcolor{azulnota}{\sffamily\bfseries NOTA}\quad}}
-\newtcolorbox{cajapendiente}[1]{lumabase, colback=naranjapend!8, colframe=naranjapend, detach title, before upper={\textcolor{naranjapend}{\sffamily\bfseries PENDIENTE}\enspace{\scriptsize\ttfamily\color{naranjapend}[#1]}\quad}}
+\newtcolorbox{cajapendiente}[1]{lumabase, colback=naranjapend!8, colframe=naranjapend, detach title, before upper={\textcolor{naranjapend}{\sffamily\bfseries PENDIENTE}\quad}}
 \newcommand{\advertencia}[1]{\begin{cajaadvertencia}#1\end{cajaadvertencia}}
 \newcommand{\nota}[1]{\begin{cajanota}#1\end{cajanota}}
 % \pendiente{clave}{texto}: dato que el equipo todavía debe confirmar. Las claves permitidas están en tests/pendientes.test.mjs.

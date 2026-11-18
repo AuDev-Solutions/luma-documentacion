@@ -7,7 +7,7 @@ Lo que el sistema no hace hoy, por qué y qué se propone.
 \item[Límite de corriente apagado de fábrica] La plantilla deja \texttt{maxpwr: 0}. Hay que configurarlo en cada poste (capítulo~\ref{cap:consumo}).
 \item[LUMA solo por http] LUMA se abre desde el propio poste por \texttt{http}. Una copia publicada en internet con \texttt{https} no puede hablar con el poste porque el navegador lo bloquea.
 \item[F5 en placas ya fabricadas] Corregido en el diseño el 18-11-2026 (capítulo~\ref{cap:pcb}). Las placas fabricadas antes tienen F5 puenteado: el regulador depende del fusible externo, o hay que cortar la pista.
-\item[Fusibles por confirmar] La corriente ya está medida (\dato{corrientePorCara} por cara). Los valores y portafusibles definitivos dependen de la temperatura real dentro de la caja (capítulo~\ref{cap:cableado}).
+\item[Fusible de la fuente ajustado] Los fusibles son los de 5×20~mm que se compraron (3~A, 1~A y 5~A). El de 5~A de la salida de la fuente queda cerca de su límite con el poste en blanco al 100~\%; falta medir la temperatura dentro de la caja para confirmarlo (capítulo~\ref{cap:cableado}).
 \item[Fuente de interiores] La FUE0007 trabaja de 0 a 40~°C y no es estanca. Requiere caja ventilada y protegida, o cambiarla por una fuente para exteriores.
 \item[Avisos del chequeo de la placa] El DRC muestra 10 avisos heredados de la versión anterior (serigrafía sobre cobre y huellas de resistencias). Ninguno es de conexión ni de separación, pero conviene limpiarlos antes de un lote nuevo.
 \item[Sin adaptador de nivel lógico] La señal sale a 3,3~V. Funciona con los cables de prueba; con cables largos puede hacer falta un 74AHCT125 a 5~V. R1 y R2 no tienen valor en el esquema (lo usual es 220 a 470~Ω).

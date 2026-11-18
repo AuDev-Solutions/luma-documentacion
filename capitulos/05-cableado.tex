@@ -32,8 +32,6 @@ Cada cara es una cadena de \dato{ledsPorCara} píxeles. Los píxeles WS2811 tien
 
 \nota{La placa no lleva adaptador de nivel lógico (74HCT125): la ESP32 envía la señal a 3,3~V y funcionó en las pruebas con estos píxeles. Si con cables de datos largos aparecen parpadeos o colores errados en el primer píxel, acorta el cable de datos o añade un adaptador de nivel.}
 
-\foto{cara-entrada}{Extremo de entrada (DIN) de una cara conectado a la bornera A1, mostrando el orden GND · datos · +12 V.}{0.7}
-\foto{inyeccion-extremo}{Conexión de inyección al extremo lejano de una cara.}{0.7}
 
 \section{Caja y montaje}
 
@@ -42,17 +40,16 @@ Placa y fuente van dentro de una caja estanca, con prensaestopas para los cables
 \foto{caja-montada}{Caja abierta del poste que funciona: arriba, la placa con la ESP32-S3; abajo, la fuente de 12~V con su portafusible externo («FUSE»). Los cables rojo y negro llevan 12~V de la fuente a las borneras de la placa, y los de las caras salen por el agujero de arriba.}{0.85}
 \foto{caja-cerrada}{Caja cerrada, con los cables de las dos caras saliendo por un costado y sus conectores de 3 polos hacia los píxeles WS2811.}{0.55}
 
-\advertencia{En las fotos, los cables salen por un agujero sin prensaestopas y la caja deja de ser estanca. Pon un prensaestopas del diámetro del agujero (o sella el paso) antes de instalar la caja en la calle.}
-\foto{poste-completo}{Poste completo instalado y encendido, con las dos caras visibles.}{0.6}
+\advertencia{En las fotos, los cables salen por un agujero sin prensaestopas y la caja deja de ser estanca. Antes de instalar la caja en la calle, pon un prensaestopas por cable (se compraron PG-7, PG-9 y PG-13.5; capítulo~\ref{cap:materiales}) del tamaño del cable que pasa, y sella cualquier otro agujero.}
 
 \section{Fusibles y calibre del cable}
 
-La recomendación inicial, a partir de la corriente medida (\dato{corrienteMedida}), es:
+Los fusibles son de vidrio de 5×20~mm, los que se compraron (capítulo~\ref{cap:materiales}). Con la corriente medida (\dato{corrienteMedida}):
 \begin{itemize}
-\item Por cara (F6 y F7, o portafusibles externos): \dato{fusibleCara}.
-\item Regulador (F5): \dato{fusibleRegulador}. El LM2596 con la ESP32 toma menos de 0,3~A de 12~V; el fusible lento aguanta el pico de carga de sus condensadores al encender.
-\item A la salida de la fuente, antes de dividir los ramales: \dato{fusibleFuente}.
+\item Caras (F6 y F7) e inyección (F1 y F2): \dato{fusibleCara}. Cada cara toma \dato{corrientePorCara}, poco más de la mitad del valor del fusible.
+\item Regulador (F5): \dato{fusibleRegulador}. El LM2596 con la ESP32 toma menos de 0,3~A de 12~V. Si el fusible se funde al conectar la fuente, por el pico de carga de los condensadores, cámbialo por uno de 1~A de acción lenta.
+\item A la salida de la fuente, antes de dividir los ramales: \dato{fusibleFuente}. Lleva las dos caras (\dato{corrientePoste}) más el regulador, unos 3,5~A en total.
 \end{itemize}
-A 85~°C un fusible ATO de 4~A sostiene unos 3~A continuos y uno de 7,5~A unos 5~A (tabla de Littelfuse), así que hay que medir la temperatura real de la caja. Con los 1,59~A medidos por cara, el ATO de 4~A tiene margen incluso a 85~°C; el de 7,5~A en la fuente lleva las dos caras (3,18~A) más el regulador. Fuera de la caja usa portafusibles ATO sellados IP67 (por ejemplo, Littelfuse FHAS/FHAC). Cambiar solo la huella de la placa a un ATO abierto no da protección contra el ambiente.
+Un fusible de vidrio no debe trabajar por encima del 75~\% de su valor, y aguanta menos cuando hace calor. El de 5~A de la fuente es el más ajustado: si se funde con el poste en blanco al 100~\% en un día de calor, baja el brillo máximo en LUMA o cambia ese fusible por uno de 6,3~A. Los portafusibles de la placa son abiertos: solo sirven dentro de la caja estanca.
 
-\pendiente{fusibles}{Valor definitivo de los fusibles F1, F2, F5, F6, F7 y del fusible externo de la fuente, y calibre y longitud de los cables de 12~V. Los valores de arriba son la recomendación inicial del proyecto; ya se midió la corriente (\dato{corrientePorCara} por cara, \dato{corrientePoste} el poste); falta medir la temperatura dentro de la caja tras 30 minutos en blanco al 100~\%.}
+\pendiente{fusibles}{Temperatura dentro de la caja tras 30 minutos en blanco al 100~\%, para confirmar el fusible de 5~A de la fuente, y el fusible de la entrada de 120~V.}

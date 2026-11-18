@@ -6,20 +6,39 @@ Un poste lleva la placa \dato{pcbVersion} con sus componentes, la fuente, las do
 
 \input{build/bom.tex}
 
-\nota{El esquema no guarda el valor de R1, R2, C1 y C2 (aparecen como «R» y «C\_Polarized\_Small»). Toma el valor de la lista de compra o de las piezas que vienen en las placas ya armadas.}
+\nota{El esquema no guarda el valor de R1, R2, C1 y C2 (aparecen como «R» y «C\_Polarized\_Small»). Tampoco están en los pedidos: toma el valor de las piezas que tiene la placa del poste que funciona. Lo usual es 220 a 470~Ω para R1 y R2 (sección~\ref{sec:pines}).}
 
 \section{Materiales fuera de la placa}
 
-\begin{longtable}{@{}p{0.3\linewidth} p{0.18\linewidth} p{0.44\linewidth}@{}}
+Lo que lleva un poste, tomado de los pedidos que se hicieron a Electronilab y a Dualtronica. Se pidieron dos ESP32-S3 y dos LM2596: el poste usa uno de cada uno y el otro queda de repuesto.
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.36\linewidth} >{\raggedright\arraybackslash}p{0.2\linewidth} >{\raggedright\arraybackslash}p{0.36\linewidth}@{}}
 \toprule
-\textbf{Material} & \textbf{Cantidad} & \textbf{Referencia} \\ \midrule \endhead
-Fuente conmutada 12~V 15~A (180~W) & 1 & Electronilab FUE0007 · \url{https://electronilab.co/tienda/fuente-conmutada-12v-dc-15a-180w/} \\
-Píxeles WS2811 12~V, 12~mm, IP68 (paquetes de 25) & \dato{ledsTotal} píxeles (8 paquetes) & Electronilab · \url{https://electronilab.co/tienda/25-x-led-rgb-pixels-12mm-difusos-ws2811-waterproof-ip68/} \\
-Placa ESP32-S3 N16R8 & 1 & Electronilab WIF0036 (se suelda o inserta en U1) \\
-Fusibles 5×20~mm para F1, F2, F5, F6 y F7 & 5 & Valor por confirmar (capítulo~\ref{cap:cableado}) \\
-Cable para 12~V, datos y tierra & según la altura del poste & Calibre por confirmar (capítulo~\ref{cap:cableado}) \\
+\textbf{Material} & \textbf{Cantidad} & \textbf{Proveedor} \\ \midrule \endhead
+Fuente conmutada 12~V 15~A (180~W) & 1 & Electronilab (FUE0007) \\
+Píxeles WS2811 12~V, 12~mm, difusos, IP68, en tiras de 50 & \dato{ledsTotal} píxeles (4 tiras) & Electronilab \\
+Placa ESP32-S3 N16R8 DevKitC, CH340, dos USB-C, con pines soldados & 1 & Electronilab (WIF0036) \\
+Shield de expansión con borneras para ESP32-S3 de 44 pines & 1 & Dualtronica (2-692) \\
+Fusible de vidrio 5×20~mm de 3~A (F1, F2, F6, F7) & 4 & Dualtronica (2-672) \\
+Fusible de vidrio 5×20~mm de 1~A (F5) & 1 & Dualtronica (2-670) \\
+Fusible de vidrio 5×20~mm de 5~A (salida de la fuente) & 1 & Dualtronica (2-674) \\
+Portafusible de chasis 5×20~mm, 10~A (salida de la fuente) & 1 & Dualtronica (2-681) \\
+Cable vehicular 16~AWG de cobre, rojo y negro (12~V de la fuente a la placa) & según la caja & Dualtronica (2-490 y 2-488) \\
+Prensaestopas PG-7 (cable de 3,5 a 6~mm), PG-9 (4 a 8~mm) y PG-13.5 (6 a 12~mm) & uno por cable que sale de la caja & Electronilab \\
 Caja estanca para placa y fuente & 1 & Debe mantener la fuente dentro de 0--40~°C \\
 \bottomrule
 \end{longtable}
 
-\pendiente{listaCompra}{Lista de compra real con proveedor, referencia exacta y cantidad de cada pieza (incluidos los valores de R1, R2, C1, C2, el calibre del cable y la caja). Mientras no exista, esta lista se basa en el esquema de KiCad y en los enlaces de Electronilab de las notas del proyecto.}
+\section{Para fabricar y soldar la placa}
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.56\linewidth} >{\raggedright\arraybackslash}p{0.36\linewidth}@{}}
+\toprule
+\textbf{Material} & \textbf{Proveedor} \\ \midrule \endhead
+Baquela virgen de fibra de vidrio 10×10~cm, doble cara en cobre & Dualtronica (1-087) \\
+Soldadura de estaño 1~mm 63/37 con flux (ProsKit 9S001) & Electronilab \\
+Pasta para soldar (flux) ProsKit 8S005, sin plomo & Electronilab \\
+Regla de PCB para electrónica, SMD, 10~cm & Electronilab \\
+\bottomrule
+\end{longtable}
+
+\pendiente{listaCompra}{Valor de R1, R2, C1 y C2, que no aparecen en los pedidos, y el cable y la clavija de la entrada de 120~V.}
