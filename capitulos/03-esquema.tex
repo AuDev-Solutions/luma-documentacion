@@ -8,7 +8,7 @@
 \section{Bloques del esquema}
 
 \begin{description}[leftmargin=0pt]
-\item[Alimentación del regulador e inyección] S\_LM\_INY1 entrega +12~V a la red \texttt{+12V\_INY}, que pasa por F5 (puenteado) hacia la entrada del LM2596 y hacia F1 (INY1) y F2 (INY2).
+\item[Alimentación del regulador e inyección] S\_LM\_INY1 entrega +12~V a la red \texttt{+12V\_INY}. De ahí salen tres ramales, cada uno con su fusible: F5 hacia la entrada del LM2596 (red \texttt{+12V\_LM}), F1 hacia INY1 y F2 hacia INY2. Hasta el 18-11-2026, las dos patas de F5 estaban en la misma red y F5 no protegía (capítulo~\ref{cap:pcb}).
 \item[Regulador] El LM2596 entrega \dato{reguladorSalida} en \texttt{+5V\_ESP}, conectado al pin 5V de la ESP32.
 \item[Alimentación de las caras] S\_A\_B1 entrega +12~V a \texttt{+12V\_CARAS}; F6 alimenta la cara A (A1) y F7 la cara B (B1). C1 y C2 filtran cada salida.
 \item[Datos] Tres pines de la ESP32 llegan a la bornera B2 como \texttt{GPIO\_A}, \texttt{GPIO\_B} y \texttt{GPIO\_C}. \texttt{GPIO\_A} pasa por R1 a \texttt{D1} (cara A) y \texttt{GPIO\_B} por R2 a \texttt{D2} (cara B). \texttt{GPIO\_C} queda libre para una función futura.
@@ -26,6 +26,17 @@ Datos cara B & \texttt{GPIO\_B} → pin 5 del módulo (GPIO\dato{pinesEsquema.GP
 Reserva & \texttt{GPIO\_C} → pin 4 del módulo (GPIO\dato{pinesEsquema.GPIO_C}) & GPIO7 & --- \\
 \bottomrule
 \end{tabularx}
+
+Revisión del diseño final (esquema y trazado de la \dato{pcbVersion}, que coinciden entre sí):
+\begin{itemize}
+\item \textbf{Los pines del diseño son buenos.} GPIO\dato{pinesEsquema.GPIO_A}, GPIO\dato{pinesEsquema.GPIO_B} y GPIO\dato{pinesEsquema.GPIO_C} no son pines de arranque ni van al USB, a la memoria flash o a la PSRAM, y cualquiera de ellos puede usar el driver RMT o I2S.
+\item \textbf{El poste que funciona no está cableado como la \dato{pcbVersion}.} Sus datos salen por GPIO\dato{pinesPosteActual.caraA} y GPIO\dato{pinesPosteActual.caraB} (pines \dato{padsPosteActual.caraA} y \dato{padsPosteActual.caraB} del módulo), y en el trazado de la \dato{pcbVersion} esos dos pines no están conectados a nada. Antes de montar una placa nueva, comprueba con continuidad a qué GPIO llega cada cara (sección~\ref{sec:comprobar-pin}).
+\item \textbf{Con una \dato{pcbVersion} fabricada}, configura WLED con cara A en GPIO\dato{pinesEsquema.GPIO_A} (RMT) y cara B en GPIO\dato{pinesEsquema.GPIO_B} (I2S), las dos desde el LED 0 (sección~\ref{sec:salidas-wled}). LUMA no cambia los pines: solo lee los que tenga WLED.
+\item \textbf{La nota LEEME del proyecto de KiCad está desactualizada} (dice GPIO4 y GPIO5). Manda el esquema.
+\item \textbf{Nivel de la señal.} La ESP32 entrega 3,3~V y los WS2811 de 12~V esperan, en teoría, al menos 0,7 × 5~V. Funciona en las pruebas, pero queda al límite con cables largos o fríos. Para la próxima versión se recomienda un adaptador de nivel 74AHCT125 (o 74HCT125) alimentado a 5~V entre la ESP32 y R1/R2.
+\item \textbf{R1 y R2} no tienen valor en el esquema. Lo usual es 220 a 470~Ω, puestas cerca del pin que envía la señal.
+\item La huella del módulo es la de la DevKitC oficial de Espressif. El orden de los pines de la placa que se compra (WIF0036) no está comprobado contra esa huella.
+\end{itemize}
 
 \pendiente{pinesConfirmados}{Qué GPIO lleva realmente los datos de cada cara en la placa fabricada. El esquema, la nota del proyecto y el poste que funciona no coinciden. En el poste que funciona se comprobó además que el camino de la placa hacia GPIO18 no da señal y que la cara B solo funciona en GPIO3 con el driver I2S. Hasta confirmarlo, configura WLED con los pines del poste que funciona (\dato{pinesPosteActual.caraA} y \dato{pinesPosteActual.caraB}) y comprueba la placa con el procedimiento de la sección~\ref{sec:comprobar-pin}.}
 

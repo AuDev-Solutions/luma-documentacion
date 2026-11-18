@@ -48,16 +48,18 @@ B2 & 1 \texttt{GPIO\_A} · 2 \texttt{GPIO\_B} · 3 \texttt{GPIO\_C} & Señales d
 \textbf{Fusible} & \textbf{Protege} & \textbf{Estado} \\ \midrule
 F1 & Inyección INY1 & Activo. \\
 F2 & Inyección INY2 & Activo. \\
-F5 & Entrada \texttt{+12V\_INY} & \textbf{No protege:} sus dos extremos están unidos por cobre en la placa. \\
+F5 & Regulador LM2596 (\texttt{+12V\_LM}) & Activo desde la corrección del 18-11-2026 (ver abajo). En placas fabricadas antes, no protege. \\
 F6 & Cara A (\texttt{+12V\_A}) & Activo. \\
 F7 & Cara B (\texttt{+12V\_B}) & Activo. \\
 \bottomrule
 \end{tabularx}
 
-\advertencia{F5 está puenteado: aunque le pongas un fusible, la entrada del regulador y de la inyección queda sin protección. Protege esa línea con un fusible externo en el cable que sale de la fuente (capítulo~\ref{cap:cableado}).}
+\advertencia{\textbf{F5 en placas fabricadas antes del 18-11-2026:} sus dos patas estaban en la misma red (\texttt{+12V\_INY}) en el esquema, y en la placa una pista las unía. Aunque le pongas un fusible, el regulador queda sin protección. En esas placas, protege la línea con un fusible externo en el cable que sale de la fuente (capítulo~\ref{cap:cableado}), o corta la pista de la cara inferior entre la pata 1 de F5 (la del lado de S\_LM\_INY1) y su pata 2, y comprueba con el multímetro que ya no hay continuidad entre las dos patas sin el fusible puesto.}
+
+\paragraph{Corrección de F5.} En el esquema, el lado de F5 que va al LM2596 se llama ahora \texttt{+12V\_LM}. En la placa se quitó el tramo de pista que unía las dos patas de F5, y la pata 2 de F5, la pista y la entrada del LM2596 pasaron a \texttt{+12V\_LM}. Así, cada ramal de la entrada S\_LM\_INY1 tiene su fusible: F5 el regulador, F1 la inyección INY1 y F2 la inyección INY2. Tras el cambio, el ERC no tiene errores y el DRC no tiene errores, conexiones pendientes ni diferencias con el esquema. Los Gerber y los archivos de taladro se volvieron a exportar; los anteriores quedaron en \texttt{respaldo-antes-F5-2026-11-18/} dentro del proyecto de KiCad.
 
 \nota{Los portafusibles Keystone 3512P son abiertos: no tienen sellado contra agua, polvo ni condensación. Solo sirven dentro de una caja estanca.}
 
 \section{Estado de verificación del diseño}
 
-El chequeo eléctrico del esquema (ERC) no tiene errores. El chequeo de la placa (DRC) no tiene conexiones pendientes ni errores de separación entre pistas; quedan 22 avisos heredados de la versión anterior (4 de agujeros de montaje dentro del contorno del LM2596, 16 de serigrafía y 2 de huellas de resistencias modificadas). Revísalos si se manda a fabricar un lote nuevo.
+El chequeo eléctrico del esquema (ERC) no tiene errores. El chequeo de la placa (DRC) no tiene conexiones pendientes ni errores de separación entre pistas; quedan 10 avisos heredados de la versión anterior (8 de serigrafía sobre cobre y 2 de huellas de resistencias modificadas respecto a la biblioteca). Revísalos si se manda a fabricar un lote nuevo.

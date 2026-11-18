@@ -1,6 +1,6 @@
 \chapter{Uso de LUMA}\label{cap:uso}
 
-Este capítulo recorre la app pantalla por pantalla. Las capturas se tomaron con un poste simulado de dos caras de \dato{ledsPorCara} LED; en un poste real se ven igual.
+Este capítulo recorre la app pantalla por pantalla. Las capturas se tomaron con un poste simulado de dos caras iguales de \dato{ledsPorCara} LED; en un poste real se ven igual.
 
 \section{Conectar}
 
@@ -12,13 +12,15 @@ Pulsa «Conectar poste», escribe la dirección del poste (\dato{redPropiaIp} en
 
 \captura[0.32]{conectar-dialogo}{Ventana «Conectar poste».}
 
-Conectada, la vista superior pasa a «En vivo»: lo que se dibuja son los colores que el poste está mostrando, recibidos por WebSocket.
+Conectada, la vista superior pasa a «En vivo»: lo que se dibuja son los colores que el poste está mostrando, recibidos por WebSocket. Se ve un solo poste, rotulado «Caras A y B», porque las dos caras muestran exactamente lo mismo.
+
+Al conectar, LUMA revisa las salidas de LED del poste. Si encuentra la cara B como tramo aparte (salida 2 empezando en el LED \dato{ledsPorCara}, como queda si alguien guarda «LED \& Hardware» sin marcar «Custom bus start indices», sección~\ref{sec:salidas-wled}), la pasa al LED 0 y reinicia el poste. Tarda unos segundos y solo pasa una vez.
 
 \captura[0.3]{conectado}{LUMA conectada: arriba la vista en vivo del poste, abajo el editor.}
 
-\nota{\textbf{Todo cambio llega al poste al instante.} No hay botón «Aplicar»: cada color, efecto o segmento que eliges se envía al poste en una fracción de segundo. Dos segundos y medio después, LUMA guarda esa combinación como la escena que el poste mostrará al volver a encenderse. Deshacer y Rehacer (Ctrl+Z / Ctrl+Y en el computador) también se aplican al poste.}
+\nota{\textbf{Todo cambio llega al poste al instante.} No hay botón «Aplicar»: cada color, efecto o segmento que eliges se envía al poste en una fracción de segundo. Unos ocho segundos después del último cambio, LUMA guarda esa combinación como la escena que el poste mostrará al volver a encenderse (si cierras la app o cambias de pestaña antes, la guarda en ese momento). Esperar a que termines de editar evita gastar la memoria del poste con cada toque. Deshacer y Rehacer (Ctrl+Z / Ctrl+Y en el computador) también se aplican al poste.}
 
-\nota{\textbf{Las dos caras son siempre iguales.} Cada cara es un segmento de WLED. Lo que editas se aplica a las dos caras a la vez: no hace falta configurar la cara B por separado.}
+\nota{\textbf{Las dos caras son siempre iguales.} Cada cara tiene su pin de datos, pero las dos salidas empiezan en el mismo LED: WLED envía cada píxel a las dos y la cara B repite a la cara A LED por LED, también en los efectos aleatorios (destellos, fuegos artificiales, lluvia…). Editas un solo poste de \dato{ledsPorCara} LED y se ve igual por los dos lados; no hay nada que configurar en la cara B.}
 
 \section{Brillo general}
 
@@ -36,7 +38,7 @@ La pestaña «Colores» tiene una rueda de color, la luminosidad, el código hex
 
 La pestaña «Efectos» muestra la galería de diseños, con categorías, búsqueda (sin importar tildes) y favoritos. Los diseños que el firmware del poste no tiene se marcan «No disponible en este poste». La lista completa está en el anexo~\ref{anx:efectos}.
 
-\captura[0.3]{efectos-galeria}{Galería de efectos.}
+\captura[0.3]{efectos-galeria}{Galería de efectos. Cada miniatura muestra el poste con el efecto.}
 
 Al elegir un efecto aparecen sus ajustes: velocidad, intensidad, paleta y dirección.
 
@@ -51,19 +53,20 @@ Un segmento es un tramo de LED con su propio efecto y colores (hasta 16). En la 
 \item La barra «Editando» elige qué segmento cambias desde cualquier pestaña; «Todos» edita todos a la vez.
 \item «Unir en uno» vuelve a un solo segmento.
 \end{itemize}
+Los segmentos van de abajo (LED 1) hacia arriba (LED \dato{ledsPorCara}) y se ven igual en las dos caras.
 
 \captura[0.3]{segmentos}{Poste partido en dos segmentos.}
 
 \section{Vista ampliada}
 
-«Ver poste» (o el botón de ampliar de la vista) abre la vista grande, para mirar una cara o las dos con detalle.
+«Ver poste» (o el botón de ampliar de la vista) abre la vista grande del poste, para mirarlo con detalle.
 
 \captura[0.3]{vista-poste-ampliada}{Vista ampliada del poste.}
 
 \section{Escenas}
 
 \subsection{Temas}
-La pestaña «Escenas» empieza con temas listos: Navidad, Noche de invierno, Año nuevo, Halloween, Amor y amistad, Fiestas patrias, Blanco cálido y Fiesta. Al tocar uno se aplica al poste.
+La pestaña «Escenas» empieza con temas listos: Navidad, Noche de invierno, Año nuevo, Halloween, Amor y amistad, Fiestas patrias, Blanco cálido y Fiesta. Al tocar uno se aplica a todo el poste. Un tema puede partir el poste en bandas (por ejemplo, «Fiestas patrias» pone la bandera de Colombia en tres bandas). Si después eliges un efecto o un color en otra pestaña, ese efecto reemplaza al tema en todo el poste, no solo en una banda. Para cambiar solo una banda, elígela antes en la barra «Editando».
 
 \captura[0.3]{temas}{Temas listos para usar.}
 
@@ -98,7 +101,7 @@ El botón «Mi montaje» abre los ajustes del poste: el montaje (cuántos LED y 
 \captura[0.4]{mi-montaje}{«Mi montaje».}
 
 \begin{description}[leftmargin=0pt]
-\item[Montaje] Los píxeles WS2811 no informan cuántos hay: LUMA lee la cantidad configurada en WLED. Con dos salidas de 100, el montaje es «Dos caras · 200 LEDs». «Volver a detectar» relee la configuración; «La cara B empieza arriba» ajusta la vista cuando la cara B está cableada desde arriba.
+\item[Montaje] Los píxeles WS2811 no informan cuántos hay: LUMA lee la cantidad configurada en WLED. Con dos salidas de 100 que empiezan en el LED 0, el montaje es «Dos caras · 200 LEDs · la cara B repite la cara A»: WLED cuenta \dato{ledsWled} LED y en el poste hay \dato{ledsTotal}. Debajo se ven las salidas de datos («GPIO 17 (LED 1–100) · GPIO 3 (LED 1–100)»). Este montaje lo detecta LUMA a partir de las salidas, no se elige a mano; con él, la lista solo ofrece los montajes de una cara. Con 200 por cara aparece «Poste completo · 400 LEDs». «Volver a detectar» relee la configuración.
 \item[Consumo] Corriente estimada y límite (capítulo~\ref{cap:consumo}).
 \item[Wi-Fi del poste] Estado de la red propia y «Configurar para funcionar solo», que fija el nombre y la contraseña de la red propia y quita la red de casa.
 \item[Seguridad] Estado de la contraseña de la red propia y del bloqueo de actualizaciones, con un enlace a los ajustes avanzados de WLED.

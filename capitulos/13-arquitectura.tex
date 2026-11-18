@@ -11,9 +11,9 @@ LUMA es una aplicación web hecha con React 19 y Vite 7. No tiene servidor propi
 
 \begin{enumerate}
 \item El usuario cambia un color. El componente llama a \texttt{setScene} en \texttt{App.jsx}; la escena es un objeto con \texttt{segments} (tramos) y \texttt{faces} (efecto, colores, velocidad, brillo… de cada tramo).
-\item \texttt{App.jsx} copia la cara A en la cara B (\texttt{toPole}) y, 180~ms después, llama a \texttt{sendScene} de \texttt{lib/wled.js}.
+\item \texttt{App.jsx} prepara la escena para el montaje (\texttt{toPole}) y, 180~ms después, llama a \texttt{sendScene} de \texttt{lib/wled.js}. En el poste de dos caras iguales no hay nada que copiar: WLED tiene \dato{ledsWled} LED y el controlador los envía a los dos pines.
 \item \texttt{buildPayload} traduce la escena al JSON de WLED: busca por nombre el número del efecto y de la paleta en ese poste, convierte porcentajes a 0--255 y arma un segmento por tramo.
-\item Se envía con \texttt{POST /json/state}. A los 2,5~s, \texttt{rememberAppliedScene} (\texttt{lib/controller.js}) guarda la escena como preset 248, el de encendido.
+\item Se envía con \texttt{POST /json/state}. Ocho segundos después del último cambio (o al cerrar o esconder la app), \texttt{rememberAppliedScene} (\texttt{lib/controller.js}) guarda la escena como preset 248, el de encendido. Si la escena no cambió desde la última vez, no se escribe.
 \item WLED dibuja los LED y, por \texttt{/ws}, devuelve los colores reales (Peek). \texttt{lib/live-preview.js} los recibe y \texttt{lib/pole-renderer.js} los pinta en la vista.
 \end{enumerate}
 
@@ -27,15 +27,15 @@ LUMA es una aplicación web hecha con React 19 y Vite 7. No tiene servidor propi
 \texttt{App.jsx} & Estado central: escena, historial (deshacer/rehacer, 60 pasos), poste conectado, montaje, envío en vivo y guardado. Detecta si se sirve desde el propio poste para conectarse sola. \\
 \texttt{styles.css} & Todo el estilo visual. \\
 \multicolumn{2}{@{}l}{\textbf{\texttt{src/lib/}} (lógica, sin interfaz, con pruebas)} \\
-\texttt{wled.js} & Adaptador con WLED: conectar (\texttt{connectWled}), traducir escenas (\texttt{buildPayload}), enviar (\texttt{sendScene}, \texttt{applyWled} con verificación), leer la escena del poste (\texttt{sceneFromDevice}), cambiar la cantidad de LED (\texttt{setLedCount}) y el PIN de ajustes. \\
-\texttt{controller.js} & Lo que se guarda en el poste: escenas como presets (subiendo \texttt{presets.json}), modo automático (lista de reproducción, preset 249), escena de encendido (248), apagado (250), horario (temporizadores), hora, límite de corriente, Wi-Fi propio y estado de seguridad. \\
+\texttt{wled.js} & Adaptador con WLED: conectar (\texttt{connectWled}), traducir escenas (\texttt{buildPayload}), enviar (\texttt{sendScene}, \texttt{applyWled} con verificación), leer la escena del poste (\texttt{sceneFromDevice}), cambiar la cantidad de LED (\texttt{setLedCount}), poner la cara B en el LED 0 (\texttt{copyFaceB}), reiniciar el poste (\texttt{restartPole}) y el PIN de ajustes. \\
+\texttt{controller.js} & Lo que se guarda en el poste: escenas como presets (subiendo \texttt{presets.json}, una escritura a la vez), modo automático (lista de reproducción, preset 249), escena de encendido (248), apagado (250), horario (temporizadores), hora, límite de corriente, Wi-Fi propio y estado de seguridad. \\
 \texttt{scenes.js} & Catálogo de efectos (\texttt{effects}), categorías, y la simulación de cada efecto para la vista previa (\texttt{pixelColor}). \\
-\texttt{themes.js} & Temas listos (Navidad, Halloween…), construidos para cualquier cantidad de LED. \\
+\texttt{themes.js} & Temas listos (Navidad, Halloween…), construidos para una cara de cualquier cantidad de LED. \\
 \texttt{palettes.js} & Paletas de WLED con el nombre que muestra LUMA; se resuelven por nombre en cada poste. \\
-\texttt{segments.js} & Tramos: dividir, crear, unir, validar (máximo 16) y copiar la cara A en la B (\texttt{toPole}). \\
-\texttt{mounts.js} & Montajes posibles (50, 100, 200, 400 LED; una o dos caras). \\
+\texttt{segments.js} & Tramos: dividir, crear, unir, validar (máximo 16) y pasar la escena del editor al poste (\texttt{toPole}) y de vuelta (\texttt{fromPole}). \\
+\texttt{mounts.js} & Montajes posibles (50, 100, 200, 400 LED; una o dos caras) y detección de las caras copiadas por el controlador (\texttt{copiedOutputs}). \\
 \texttt{live-preview.js} & WebSocket \texttt{/ws} con Peek: recibe los colores reales del poste. \\
-\texttt{pole-renderer.js} & Dibuja el poste en un \texttt{<canvas>}, con la simulación o con los colores en vivo. \\
+\texttt{pole-renderer.js} & Dibuja un solo poste en un \texttt{<canvas>}, con la simulación o con los colores en vivo. \\
 \multicolumn{2}{@{}l}{\textbf{\texttt{src/components/}} (pantallas)} \\
 \texttt{PolePreview.jsx} & Vista del poste y vista ampliada. \\
 \texttt{SceneControls.jsx} & Pestañas del editor y brillo general. \\
@@ -58,8 +58,10 @@ LUMA es una aplicación web hecha con React 19 y Vite 7. No tiene servidor propi
 
 \begin{description}[leftmargin=0pt]
 \item[Nombres, no números] Los efectos y paletas se buscan por nombre en el poste conectado (\texttt{resolveEffect}, \texttt{resolvePalette}). Así LUMA sigue funcionando si otra versión de WLED cambia la numeración. Si un efecto no existe en el firmware, se marca «No disponible en este poste».
-\item[Una cara se edita, la otra se copia] Con dos caras, el editor trabaja sobre la cara A y \texttt{toPole} la replica en la B (invertida si «La cara B empieza arriba»).
-\item[Presets subiendo el archivo] Guardar con \texttt{psave} también aplicaría la escena (guardar «Apagado» apagaría el poste). Por eso \texttt{controller.js} descarga \texttt{presets.json}, cambia solo las entradas de LUMA y lo sube completo.
+\item[La cara B la copia el controlador] Las dos salidas de LED empiezan en el LED 0 (montajes con \texttt{copiedFaces} en \texttt{mounts.js}). WLED ve una cara y escribe cada píxel en las dos salidas, así que las caras son idénticas incluso en efectos aleatorios. Con segmentos separados por cara, cada segmento tendría su propio azar y las caras se verían distintas. Al conectar, si las salidas no se solapan, LUMA las solapa (\texttt{copyFaceB}) y reinicia el poste, porque la salida I2S de la cara B no vuelve a encender hasta reiniciar.
+\item[Un solo cable de datos] El montaje «Dos caras · 200 LEDs» de un solo cable (\texttt{faces-200}) sigue existiendo para tiras en serie: ahí \texttt{toPole} sí copia la cara A en la B, invertida si «La cara B empieza arriba». Si la cara B sube desde arriba, el tramo superior de la cara A se une con el inferior de la B en un solo segmento con espejo (\texttt{mi}), para que los efectos crucen la cima sin cortes. Un efecto aleatorio en un segmento que no toca la cima sigue sin ser idéntico en las dos caras: para eso hacen falta dos pines.
+\item[Presets subiendo el archivo] Guardar con \texttt{psave} también aplicaría la escena (guardar «Apagado» apagaría el poste). Por eso \texttt{controller.js} descarga \texttt{presets.json}, cambia solo las entradas de LUMA y lo sube completo. Las escrituras van en fila (\texttt{oneAtATime}): si dos guardados se cruzaran, el segundo borraría lo que escribió el primero.
+\item[Temas] Un tema reemplaza todo el poste. Si después se elige un efecto con «Todos» en la barra «Editando», el poste vuelve a un solo segmento con ese efecto.
 \item[Presets reservados] 248 = escena al encender / última aplicada; 249 = modo automático; 250 = apagado del horario. Las escenas del usuario usan del 1 al 247.
 \item[La cantidad de LED la dice WLED] Los WS2811 no informan cuántos hay conectados: LUMA lee \texttt{info.leds.count}.
 \end{description}

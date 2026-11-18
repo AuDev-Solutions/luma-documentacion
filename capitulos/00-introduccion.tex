@@ -4,7 +4,7 @@ Este manual explica, de principio a fin, cómo se construye, se pone en marcha, 
 
 \section{Qué es un poste LUMA}
 
-Un poste LUMA tiene dos caras de luces LED direccionables (\dato{tipoLed}), con \dato{ledsPorCara} píxeles por cara (\dato{ledsTotal} en total). Una placa propia, la \dato{pcbVersion}, reparte la energía de una fuente de 12~V y lleva una \dato{placaEsp} que ejecuta el firmware libre WLED. El poste crea su propia red Wi-Fi, «\dato{redPropiaSsid}», y sirve la aplicación LUMA en \texttt{http://\dato{redPropiaIp}}: cualquier teléfono que se una a esa red controla las luces sin internet ni computador.
+Un poste LUMA tiene dos caras de luces LED direccionables (\dato{tipoLed}), con \dato{ledsPorCara} píxeles por cara (\dato{ledsTotal} en total). Las dos caras muestran siempre lo mismo, píxel por píxel, en todos los efectos. Una placa propia, la \dato{pcbVersion}, reparte la energía de una fuente de 12~V y lleva una \dato{placaEsp} que ejecuta el firmware libre WLED. El poste crea su propia red Wi-Fi, «\dato{redPropiaSsid}», y sirve la aplicación LUMA en \texttt{http://\dato{redPropiaIp}}: cualquier teléfono que se una a esa red controla las luces sin internet ni computador.
 
 \begin{figure}[H]\centering
 \resizebox{\linewidth}{!}{\input{diagramas/bloques}}
@@ -52,6 +52,7 @@ Los nombres de botones y pantallas de LUMA se escriben entre comillas angulares,
 \item[Firmware] Programa grabado en la ESP32. Aquí es WLED versión \dato{wledVersion}.
 \item[GPIO] Pin de entrada/salida de la ESP32. Cada cara de LED recibe sus datos por un GPIO.
 \item[I2S y RMT] Dos periféricos internos de la ESP32 que WLED usa para generar la señal de los LED. En este poste la cara A usa RMT y la cara B debe usar I2S (ver capítulo~\ref{cap:wled}).
+\item[Salida de LED] Cada pin de datos configurado en WLED, con su LED inicial («Start») y su cantidad. En el poste, las dos salidas empiezan en el LED 0 para que la cara B repita a la cara A.
 \item[Inyección] Alimentar la tira también por el extremo lejano para que no caiga la tensión a lo largo del poste.
 \item[OTA] Actualización del firmware por Wi-Fi, sin cable USB.
 \item[Píxel] Cada punto de luz controlable. En las tiras WS2811 de 12~V, un chip controla un píxel.

@@ -4,20 +4,20 @@ La plantilla se genera con \texttt{npm run datos} a partir de la configuración 
 
 \section{Salidas de LED (\texttt{hw.led})}
 \begin{codigo}
-"total": 200,       // LED en total (dos caras de 100)
+"total": 100,       // LED que ve WLED: una cara (200 físicos, la B repite la A)
 "maxpwr": 0,        // límite global en mA; 0 = apagado (se fija desde LUMA)
 "ins": [
-  { "start": 0,   "len": 100, "pin": [17], "type": 22, "order": 1, "drv": 0, "ledma": 30 },
-  { "start": 100, "len": 100, "pin": [3],  "type": 22, "order": 1, "drv": 1, "ledma": 30 }
+  { "start": 0, "len": 100, "pin": [17], "type": 22, "order": 1, "drv": 0, "ledma": 15 },
+  { "start": 0, "len": 100, "pin": [3],  "type": 22, "order": 1, "drv": 1, "ledma": 15 }
 ]
 \end{codigo}
 \begin{description}[leftmargin=1.5em]
-\item[\texttt{start}, \texttt{len}] Primer LED y cantidad de cada salida. La cara B empieza donde termina la A.
+\item[\texttt{start}, \texttt{len}] Primer LED y cantidad de cada salida. Las dos empiezan en 0: WLED envía cada píxel a las dos salidas, así que la cara B repite a la cara A LED por LED en todos los efectos. Si la cara B empezara en 100, cada cara sería un tramo distinto y los efectos aleatorios se verían diferentes en cada una.
 \item[\texttt{pin}] GPIO de datos (anexo~\ref{anx:pines}).
 \item[\texttt{type: 22}] WS281x RGB.
 \item[\texttt{order: 1}] Orden de color RGB (el de los WS2811).
 \item[\texttt{drv}] 0 = RMT, 1 = I2S. La segunda salida debe ser I2S.
-\item[\texttt{ledma: 30}] Corriente por LED con la que WLED \emph{estima} el consumo (no es una medición).
+\item[\texttt{ledma: 15}] Corriente por LED con la que WLED \emph{estima} el consumo (no es una medición). 15~mA corresponde a los \dato{corrientePorCara} medidos por cara (capítulo~\ref{cap:consumo}).
 \end{description}
 
 \section{Red propia (\texttt{ap}) y red de casa (\texttt{nw})}
@@ -41,10 +41,10 @@ La plantilla se genera con \texttt{npm run datos} a partir de la configuración 
 \section{Encendido (\texttt{def}), hora (\texttt{if.ntp}) y horario (\texttt{timers})}
 \begin{codigo}
 "def": { "ps": 0, "on": true, "bri": 128 },
-"if":  { "ntp": { "en": false, "tz": 0, "offset": 0, "lt": 0, "ln": 0 } },
+"if":  { "ntp": { "en": false, "tz": 0, "offset": -18000, "lt": 0, "ln": 0 } },
 "timers": { "ins": [] }
 \end{codigo}
-LUMA escribe estos bloques: \texttt{def.ps} pasa a 248 (escena al encender) al aplicar escenas, \texttt{if.ntp} recibe la diferencia horaria y la ubicación del teléfono, y \texttt{timers.ins} recibe el horario. En la plantilla quedan vacíos a propósito.
+LUMA escribe estos bloques: \texttt{def.ps} pasa a 248 (escena al encender) al aplicar escenas, \texttt{if.ntp} recibe la diferencia horaria y la ubicación del teléfono, y \texttt{timers.ins} recibe el horario. En la plantilla quedan vacíos a propósito, salvo la diferencia horaria: \texttt{offset} de $-18\,000$~s es la hora de Colombia (UTC$-5$).
 
 \section{Seguridad (\texttt{ota})}
 \begin{codigo}

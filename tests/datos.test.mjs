@@ -23,6 +23,7 @@ test('el entorno de compilación existe en platformio.ini', () => {
 test('producción: 100 LEDs por cara y el total cuadra', () => {
   assert.equal(datos.ledsPorCara, 100);
   assert.equal(datos.ledsTotal, datos.ledsPorCara * datos.caras);
+  assert.equal(datos.ledsWled, datos.ledsPorCara, 'la cara B repite la A: WLED ve una cara');
 });
 
 test('los comandos de LUMA que cita el manual existen', () => {

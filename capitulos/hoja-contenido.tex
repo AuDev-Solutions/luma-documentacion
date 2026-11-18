@@ -18,16 +18,17 @@ Técnico & \linea{4cm} & Ubicación & \linea{4cm} \\
 \multicolumn{3}{@{}l}{\sffamily\bfseries Placa y alimentación} \\
 \casilla & Sin corto entre +12~V y GND en las borneras & \\
 \casilla & Salida del LM2596 medida antes de poner la ESP32 & \linea{1.6cm}~V \\
-\casilla & Fusibles F1, F2, F6, F7 y fusible externo puestos & Valores: \linea{2.2cm} \\
+\casilla & Fusibles F1, F2, F5, F6, F7 y externo puestos & Valores: \linea{2.2cm} \\
 \multicolumn{3}{@{}l}{\sffamily\bfseries Firmware y red} \\
 \casilla & Firmware WLED \dato{wledVersion} grabado & \\
 \casilla & \texttt{cfg-plantilla.json} subido y corriente cortada después & \\
 \casilla & Red propia «\dato{redPropiaSsid}» visible (no «WLED-AP») & \\
 \casilla & Contraseña de la red propia cambiada (no se escribe aquí) & \\
-\casilla & Salidas en «LED \& Hardware»: A en RMT, B en I2S, total \dato{ledsTotal} & GPIO A/B: \linea{1.8cm} \\
+\casilla & «LED \& Hardware»: A en RMT, B en I2S, las dos desde el LED 0, total \dato{ledsWled} (\dato{ledsTotal} físicos) & GPIO A/B: \linea{1.8cm} \\
 \multicolumn{3}{@{}l}{\sffamily\bfseries Luces} \\
 \casilla & Cara A enciende completa (rojo, verde, azul) & \\
 \casilla & Cara B enciende completa (rojo, verde, azul) & \\
+\casilla & Un efecto aleatorio se ve igual en las dos caras & \\
 \casilla & Blanco al 100~\%: el último píxel no se ve amarillento & Corriente: \linea{1.6cm}~A \\
 \multicolumn{3}{@{}l}{\sffamily\bfseries App LUMA} \\
 \casilla & LUMA abre en \texttt{http://\dato{redPropiaIp}} y muestra la vista en vivo & \\

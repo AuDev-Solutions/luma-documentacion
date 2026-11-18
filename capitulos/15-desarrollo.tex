@@ -8,11 +8,12 @@
 \texttt{npm install} & Instala las dependencias (una vez, y cada vez que cambie \texttt{package.json}). \\
 \texttt{npm run dev} & Servidor de desarrollo en \texttt{http://localhost:5174}; recarga al guardar. También accesible desde el teléfono en la misma red, con la IP del computador. \\
 \texttt{npm start} & Compila y sirve la versión final en \texttt{http://localhost:5173}. \\
-\texttt{npm test} & 40 pruebas de lógica: adaptador de WLED, segmentos, paletas, presets, horario, límites, temas, montajes y vista en vivo. Tarda segundos. \\
-\texttt{npm run test:e2e} & 9 recorridos completos en Chromium contra un poste simulado. Necesita Chrome o el Chromium de Playwright; si no lo encuentra, indica su ruta en la variable \texttt{LUMA\_CHROME}. \\
+\texttt{npm test} & 43 pruebas de lógica: adaptador de WLED, segmentos, paletas, presets, horario, límites, temas, montajes, caras copiadas y vista en vivo. Tarda segundos. \\
+\texttt{npm run test:e2e} & 10 recorridos completos en Chromium contra un poste simulado. Necesita Chrome o el Chromium de Playwright; si no lo encuentra, indica su ruta en la variable \texttt{LUMA\_CHROME}. \\
 \texttt{npm run build:poste} & Empaqueta la app para el poste (capítulo~\ref{cap:instalar}). \\
 \texttt{npm run instalar:poste -{}- <ip>} & Sube la app al poste. \\
 \texttt{npm run capturas:manual} & Vuelve a tomar las capturas de este manual. \\
+\texttt{npm run format} & Ordena el formato del código con Prettier (reglas en \texttt{.prettierrc.json}). \texttt{npm run format:check} solo revisa, sin cambiar nada. \\
 \bottomrule
 \end{longtable}
 
@@ -21,7 +22,7 @@
 \section{Antes de subir un cambio a un poste}
 
 \begin{enumerate}
-\item \texttt{npm test}: todas pasan.
+\item \texttt{npm run format:check} y \texttt{npm test}: todas pasan.
 \item \texttt{npm run test:e2e}: todas pasan.
 \item Prueba manual con un poste (o uno de banco): conectar, cambiar color, un efecto, guardar una escena en el poste y cortar la corriente para ver que arranca con ella.
 \item \texttt{npm run build:poste} e \texttt{instalar:poste}.
@@ -56,5 +57,6 @@ Cuando no esté claro qué debe hacer una función, lee su prueba. Algunas útil
 \item \texttt{tests/controller.test.js}: cómo se traduce una escena al JSON de WLED.
 \item \texttt{tests/wled-parity.test.js}: comportamientos que imitan la interfaz original de WLED (segmento seleccionado, valores de \texttt{fxdata}, paletas por nombre).
 \item \texttt{tests/controller-features.test.js}: presets, modo automático, horario, hora, límite de corriente, Wi-Fi y temas.
-\item \texttt{tests/e2e/mock-pole.mjs}: un poste WLED simulado; sirve para entender qué responde el poste a cada petición.
+\item \texttt{tests/mounts.test.js}: montajes, caras copiadas por el controlador y reinicio tras cambiar las salidas.
+\item \texttt{tests/e2e/mock-pole.mjs}: un poste WLED simulado; sirve para entender qué responde el poste a cada petición. Cuenta los LED a partir de las salidas, como WLED, así que dos salidas desde el LED 0 dan \dato{ledsWled}.
 \end{itemize}

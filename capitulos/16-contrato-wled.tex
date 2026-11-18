@@ -9,10 +9,10 @@ LUMA solo usa la interfaz pública de WLED: no modifica el firmware. Toda la com
 \textbf{Ruta} & \textbf{Dónde} & \textbf{Para qué} \\ \midrule \endhead
 \texttt{GET /json} & \texttt{connectWled} & Estado, información, lista de efectos y paletas al conectar. Se rechaza si no trae \texttt{info.leds}, \texttt{effects} y \texttt{state.seg}. \\
 \texttt{GET /json/fxdata} & \texttt{connectWled} & Valores por defecto de cada efecto (los mismos que usa la interfaz de WLED). Opcional. \\
-\texttt{POST /json/state} & \texttt{sendScene}, \texttt{applyWled} & Enviar la escena: encendido, brillo general, transición y un segmento por tramo (\texttt{fx}, \texttt{sx}, \texttt{ix}, \texttt{pal}, \texttt{col}, \texttt{rev}, \texttt{mi}, \texttt{start}, \texttt{stop}). También \texttt{ps} (aplicar preset) y \texttt{time} (dar la hora). \\
+\texttt{POST /json/state} & \texttt{sendScene}, \texttt{applyWled}, \texttt{restartPole} & Enviar la escena: encendido, brillo general, transición y un segmento por tramo (\texttt{fx}, \texttt{sx}, \texttt{ix}, \texttt{pal}, \texttt{col}, \texttt{rev}, \texttt{mi}, \texttt{start}, \texttt{stop}). También \texttt{ps} (aplicar preset), \texttt{time} (dar la hora) y \texttt{rb} (reiniciar). \\
 \texttt{GET /json/state} & \texttt{applyWled} & Releer el estado para confirmar que el poste aceptó todo. \\
-\texttt{GET /json/info} & \texttt{setLedCount} & Comprobar la cantidad de LED después de cambiarla. \\
-\texttt{GET/POST /json/cfg} & \texttt{controller.js}, \texttt{setLedCount} & Salidas de LED (\texttt{hw.led.ins}), límite de corriente (\texttt{hw.led.maxpwr}), preset de encendido (\texttt{def.ps}), hora y ubicación (\texttt{if.ntp}), temporizadores (\texttt{timers.ins}) y Wi-Fi propio (\texttt{nw}, \texttt{ap}). \\
+\texttt{GET /json/info} & \texttt{setLedCount}, \texttt{copyFaceB}, \texttt{restartPole} & Comprobar la cantidad de LED después de cambiarla y, por \texttt{uptime}, que el poste ya reinició. \\
+\texttt{GET/POST /json/cfg} & \texttt{controller.js}, \texttt{setLedCount}, \texttt{copyFaceB} & Salidas de LED (\texttt{hw.led.ins}), límite de corriente (\texttt{hw.led.maxpwr}), preset de encendido (\texttt{def.ps}), hora y ubicación (\texttt{if.ntp}), temporizadores (\texttt{timers.ins}) y Wi-Fi propio (\texttt{nw}, \texttt{ap}). \\
 \texttt{GET /presets.json} & \texttt{readPresets} & Leer las escenas guardadas en el poste. \\
 \texttt{POST /upload} & \texttt{writePresets}, instalador & Subir \texttt{presets.json} completo y los archivos de la app. \\
 \texttt{WS /ws} & \texttt{live-preview.js} & Envía \texttt{\{"lv":true\}} y recibe cuadros Peek: bytes \texttt{76, 1} seguidos de R, G, B de cada LED. \\
@@ -25,7 +25,9 @@ LUMA solo usa la interfaz pública de WLED: no modifica el firmware. Toda la com
 \item \textbf{Al conectar:} que la dirección sea solo \texttt{http://ip} (sin rutas ni usuario) y que responda un WLED.
 \item \textbf{Al aplicar con verificación} (\texttt{applyWled}): que el poste no esté en control en tiempo real (\texttt{info.live}); después del envío, relee \texttt{/json/state} y compara encendido, brillo, transición y, por segmento, inicio, fin, efecto, brillo, velocidad, intensidad, paleta, dirección, espejo y colores. Si algo no coincide, avisa (normalmente hay una lista de reproducción u otro control activo).
 \item \textbf{En vivo} (\texttt{sendScene}): se envía sin releer, como máximo unas cinco veces por segundo, para que la edición sea fluida.
-\item \textbf{Al cambiar la cantidad de LED} (\texttt{setLedCount}): conserva pin, tipo, orden de color, driver y límites de cada salida; reparte el total entre las salidas y espera hasta 4 segundos a que \texttt{/json/info} confirme el nuevo número.
+\item \textbf{Al conectar, las salidas} (\texttt{copyFaceB}): con dos salidas de igual longitud que no empiezan las dos en 0, pone la segunda en 0 conservando pin, tipo, orden, driver y límites, espera a que \texttt{/json/info} cuente una sola cara y reinicia el poste (\texttt{rb}), esperando hasta que \texttt{uptime} baje de 60~s. Si las longitudes no coinciden, no toca nada y avisa.
+\item \textbf{Al cambiar la cantidad de LED} (\texttt{setLedCount}): conserva pin, tipo, orden de color, driver y límites de cada salida. Con caras copiadas, las dos salidas cambian juntas desde 0; si no, reparte el total entre las salidas. Espera hasta 4 segundos a que \texttt{/json/info} confirme el nuevo número y, con dos salidas, reinicia el poste.
+\item \textbf{Al guardar en el poste}: las escrituras de \texttt{presets.json} van de una en una, y la escena de encendido solo se escribe si cambió.
 \item \textbf{Al cambiar el límite de corriente} (\texttt{setCurrentLimit}): con dos salidas, el límite va al global y cada salida queda en 0, conservando su driver.
 \end{itemize}
 

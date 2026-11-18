@@ -65,7 +65,7 @@
   },
   "hw": {
     "led": {
-      "total": 200,
+      "total": 100,
       "maxpwr": 0,
       "cct": false,
       "cr": false,
@@ -88,12 +88,12 @@
           "rgbwm": 0,
           "freq": 0,
           "maxpwr": 0,
-          "ledma": 30,
+          "ledma": 15,
           "drv": 0,
           "text": ""
         },
         {
-          "start": 100,
+          "start": 0,
           "len": 100,
           "pin": [
             3
@@ -106,7 +106,7 @@
           "rgbwm": 0,
           "freq": 0,
           "maxpwr": 0,
-          "ledma": 30,
+          "ledma": 15,
           "drv": 1,
           "text": ""
         }
@@ -274,7 +274,7 @@
       "en": false,
       "host": "0.wled.pool.ntp.org",
       "tz": 0,
-      "offset": 0,
+      "offset": -18000,
       "ampm": false,
       "ln": 0,
       "lt": 0

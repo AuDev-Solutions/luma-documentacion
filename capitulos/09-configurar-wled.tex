@@ -4,11 +4,12 @@ Una ESP32 recién grabada no sabe cuántos LED tiene ni en qué pines. La forma 
 
 \begin{itemize}
 \item Dos salidas \dato{tipoLed} (tipo WLED \dato{wledTipoLed}) de \dato{ledsPorCara} LED cada una: cara A en GPIO\dato{pinesPosteActual.caraA} con \dato{driverCaraA} y cara B en GPIO\dato{pinesPosteActual.caraB} con \dato{driverCaraB}.
+\item Las \textbf{dos salidas empezando en el LED 0}. WLED envía cada píxel a todas las salidas que lo contienen, así que la cara B repite a la cara A LED por LED en todos los efectos, también en los aleatorios (destellos, fuegos artificiales, lluvia, fuego…). WLED ve \dato{ledsWled} LED; físicamente son \dato{ledsTotal}.
 \item La red propia «\dato{redPropiaSsid}» siempre activa en \texttt{\dato{redPropiaIp}}, sin red de casa.
 \item El límite de corriente apagado (se fija después desde LUMA, capítulo~\ref{cap:consumo}).
 \end{itemize}
 
-\pendiente{pinesConfirmados}{La plantilla usa los pines del poste que funciona hoy (\dato{pinesPosteActual.caraA} y \dato{pinesPosteActual.caraB}). Si al comprobar la placa (sección~\ref{sec:comprobar-pin}) los datos llegan por otros GPIO, cámbialos en «LED \& Hardware» antes de seguir.}
+\pendiente{pinesConfirmados}{La plantilla usa los pines del poste que funciona hoy (\dato{pinesPosteActual.caraA} y \dato{pinesPosteActual.caraB}). La \dato{pcbVersion} lleva los datos a GPIO\dato{pinesEsquema.GPIO_A} (cara A) y GPIO\dato{pinesEsquema.GPIO_B} (cara B), sección~\ref{sec:pines}. Comprueba la placa (sección~\ref{sec:comprobar-pin}) y, si los datos llegan por otros GPIO, cámbialos en «LED \& Hardware» antes de seguir, dejando la cara B en I2S.}
 
 \section{Subir la plantilla}
 
@@ -16,11 +17,16 @@ Una ESP32 recién grabada no sabe cuántos LED tiene ni en qué pines. La forma 
 \item Con la ESP32 recién grabada encendida, une el teléfono o el computador a la red \textbf{WLED-AP} (contraseña \texttt{wled1234}).
 \item Abre \texttt{http://4.3.2.1}. Aparece la interfaz de WLED.
 \item Entra en \textbf{Config} › \textbf{Security \& Updates}.
-\item En «Backup \& Restore», en \textbf{Restore configuration}, elige \texttt{cfg-plantilla.json} y pulsa \textbf{Upload}.
+\item En «Backup \& Restore», en \textbf{Restore configuration}, elige \texttt{cfg-plantilla.json} y pulsa \textbf{Upload} (figura~\ref{fig:wled-respaldo}).
 \item \textbf{Corta la corriente} de la ESP32 (desconecta el USB o los 12~V), espera 5 segundos y vuelve a conectarla.
 \end{enumerate}
 
-\advertencia{Después de cambiar la configuración de LED, reinicia siempre cortando la corriente. En este poste se vio que el reinicio por software a veces no aplica los cambios: WLED lee \texttt{cfg.json} al arrancar.}
+\begin{figure}[H]\centering
+\includegraphics[width=0.55\linewidth]{img/wled/respaldo.png}
+\caption{«Backup \& Restore» en Config › Security \& Updates, en el poste que funciona. «Restore configuration» sube la plantilla; «Backup configuration» y «Backup presets» sirven para la copia de seguridad (capítulo~\ref{cap:actualizar}).}\label{fig:wled-respaldo}
+\end{figure}
+
+\advertencia{Después de cambiar la configuración de LED, reinicia siempre el poste. En este poste, tras cambiar las salidas sin reiniciar, la cara B (I2S) quedó apagada hasta reiniciarlo. El reinicio por software suele bastar y LUMA lo hace sola cuando cambia las salidas; si un cambio no se aplica, corta la corriente: WLED lee \texttt{cfg.json} al arrancar.}
 
 Resultado esperado: ya no aparece «WLED-AP» sino «\dato{redPropiaSsid}».
 
@@ -31,37 +37,54 @@ La plantilla no lleva contraseñas: WLED las guarda aparte y la red propia conse
 \begin{enumerate}
 \item Une el teléfono a «\dato{redPropiaSsid}» con la contraseña \texttt{wled1234}.
 \item Abre \texttt{http://\dato{redPropiaIp}} › \textbf{Config} › \textbf{WiFi \& Network}.
-\item En «AP password» escribe una contraseña nueva de 8 caracteres o más y guarda.
+\item En «AP password» escribe una contraseña nueva de 8 caracteres o más y guarda (figura~\ref{fig:wled-red}).
 \item Corta la corriente y vuelve a conectarla. Únete con la contraseña nueva.
 \end{enumerate}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.55\linewidth]{img/wled/red-propia.png}
+\caption{«Configure Access Point» en Config › WiFi \& Network: red propia «\dato{redPropiaSsid}», siempre activa («AP opens: Always»), en \dato{redPropiaIp}. La contraseña nunca se muestra.}\label{fig:wled-red}
+\end{figure}
 
 Anota que la contraseña se cambió en la hoja de verificación, pero \textbf{no} escribas la contraseña en la hoja. Entrégala al dueño del poste por un canal privado.
 
 \nota{También se puede cambiar desde LUMA, en «Mi montaje» › «Wi-Fi del poste» › «Configurar para funcionar solo», una vez instalada la app (capítulo~\ref{cap:instalar}).}
 
-\section{Comprobar las salidas de LED}
+\section{Comprobar las salidas de LED}\label{sec:salidas-wled}
 
-En \textbf{Config} › \textbf{LED \& Hardware} debe verse lo siguiente. El selector «Driver» de cada salida solo aparece al marcar \textbf{Show Advanced Settings}.
+En \textbf{Config} › \textbf{LED \& Hardware} marca \textbf{Show Advanced Settings} (muestra el selector «Driver» de cada salida) y \textbf{Custom bus start indices} (permite escribir el inicio de cada salida). Debe quedar así:
 
 \begin{tabularx}{\linewidth}{@{}l X X@{}}
 \toprule
 \textbf{Ajuste} & \textbf{Salida 1 · cara A} & \textbf{Salida 2 · cara B} \\ \midrule
 Tipo & WS281x & WS281x \\
 Orden de color & RGB & RGB \\
-Inicio & 0 & \dato{ledsPorCara} \\
+Inicio (Start) & 0 & 0 \\
 Longitud & \dato{ledsPorCara} & \dato{ledsPorCara} \\
 GPIO & \dato{pinesPosteActual.caraA} & \dato{pinesPosteActual.caraB} \\
 Driver & RMT & I2S \\
 \bottomrule
 \end{tabularx}
 
-Total de LED: \dato{ledsTotal}. Si cambias algo aquí, guarda y corta la corriente.
+Arriba de la página debe decir «Total LEDs: \dato{ledsWled} (\dato{ledsTotal} physical)». Si cambias algo aquí, guarda y reinicia el poste.
+
+\begin{figure}[H]\centering
+\begin{minipage}[t]{0.47\linewidth}\centering
+\includegraphics[width=\linewidth]{img/wled/salidas-al-abrir.png}\par\smallskip
+{\small\sffamily Al abrir la página, con «Custom bus start indices» sin marcar: la salida 2 aparece en «Start: 100» y el total en 200, aunque el poste tiene guardado 0.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\linewidth}\centering
+\includegraphics[width=\linewidth]{img/wled/salidas-correctas.png}\par\smallskip
+{\small\sffamily Correcto: «Custom bus start indices» marcado y la salida 2 en «Start: 0». Total 100 (200 físicos); cara A en RMT y cara B en I2S.}
+\end{minipage}
+\caption{Salidas de LED en «LED \& Hardware», en el poste que funciona.}\label{fig:wled-salidas}
+\end{figure}
+
+\advertencia{\textbf{No pulses «Save» en «LED \& Hardware» sin marcar antes «Custom bus start indices».} Esta versión de WLED no detecta al abrir la página que la salida 2 empieza en 0: la muestra en 100 y, al guardar, la cara B vuelve a ir aparte y los efectos aleatorios se ven distintos en cada cara. Si pasa, LUMA lo corrige sola la próxima vez que se conecta: pone la salida 2 en 0 y reinicia el poste.}
 
 \advertencia{Con las dos salidas en RMT, este firmware solo envía datos por la primera: la cara B queda apagada aunque todo lo demás esté bien. La segunda salida debe usar el driver I2S. Este fue el origen de horas de diagnóstico en el primer poste: no es una falla de la placa ni del pin.}
 
-\pendiente{capturasWled}{Capturas de las pantallas de WLED («Security \& Updates», «WiFi \& Network» y «LED \& Hardware») tomadas en un poste configurado. Se agregan en \texttt{img/wled/} la próxima vez que haya un poste a mano.}
-
-\nota{\textbf{Variante de 200 píxeles por cara.} Cambia la longitud de cada salida a 200, el inicio de la salida 2 a 200 y verifica que el total sea 400. El consumo se duplica (capítulo~\ref{cap:consumo}); en LUMA, «Mi montaje» ofrece el montaje «Poste completo» (400 píxeles, 200 por cara).}
+\nota{\textbf{Variante de 200 píxeles por cara.} Cambia la longitud de cada salida a 200, con las dos salidas empezando en 0: el total debe decir «200 (400 physical)». El consumo se duplica (capítulo~\ref{cap:consumo}). LUMA lo reconoce como «Poste completo · 400 LEDs» (200 por cara, la cara B repite la A).}
 
 \section{Si el poste debe conectarse a otra red}
 

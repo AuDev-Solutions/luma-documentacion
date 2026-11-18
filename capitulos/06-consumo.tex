@@ -2,9 +2,20 @@
 
 \section{Cuánto consume un poste}
 
-En las pruebas se midieron \dato{corrienteMedida} (WS2811 de 12~V). Con \dato{ledsPorCara} píxeles por cara, una estimación proporcional da cerca de 1~A por cara y 2~A por poste a pleno brillo en blanco. La fuente de 15~A tiene margen de sobra.
+En el poste se midieron \dato{corrientePorCara} por cara de \dato{ledsPorCara} píxeles WS2811 de 12~V, en blanco al 100~\%: \dato{corrientePoste} las dos caras, unos 16~mA por píxel. La fuente de 15~A tiene margen de sobra; aun con 200 píxeles por cara (cerca de 6,4~A) queda por debajo de la mitad.
 
-\nota{La estimación proporcional es una aproximación. Mide la corriente real del primer poste de producción con todos los píxeles en blanco al 100~\% y anótala en la hoja de verificación.}
+\nota{Mide la corriente de cada poste de producción con todos los píxeles en blanco al 100~\% (pinza amperimétrica en el cable de 12~V) y anótala en la hoja de verificación. Si se aleja mucho de \dato{corrientePoste}, revisa la inyección y el calibre de los cables.}
+
+\section{La corriente por LED en WLED (\texttt{ledma})}
+
+WLED no mide la corriente: la \emph{estima} con la corriente por LED de cada salida («mA/LED» en «LED \& Hardware», \texttt{ledma} en \texttt{cfg.json}) y suma la de todas las salidas. Cada cara es una salida de \dato{ledsPorCara} LED, así que en blanco al 100~\% WLED estima $2 \times \dato{ledsPorCara} \times (\texttt{ledma} + 1)$~mA (1~mA es el consumo en reposo que suma por LED).
+
+\begin{itemize}
+\item Con \texttt{ledma: 30} («30mA (typ. 12V)», el valor que trae WLED) estima unos 6,2~A: el doble de lo medido.
+\item Con \texttt{ledma: \dato{ledmaRecomendado}} («15mA» en la lista) estima unos 3,2~A, igual a lo medido. La plantilla trae este valor.
+\end{itemize}
+
+Con el valor de fábrica, la cifra «ahora» de LUMA sale al doble y el límite de corriente actuaría con la mitad de la corriente real. En un poste configurado antes de esta medición, cambia «mA/LED» a 15 en las dos salidas (con «Custom bus start indices» marcado, sección~\ref{sec:salidas-wled}), guarda y reinicia.
 
 \section{El límite de corriente de WLED}
 

@@ -6,7 +6,7 @@ Antes de entregar o instalar un poste, recorre esta prueba completa. La hoja de 
 \begin{enumerate}
 \item Sin corto entre +12~V y GND en todas las borneras.
 \item LM2596 entrega \dato{reguladorSalida} medidos en el pin 5V de la ESP32.
-\item Fusibles puestos en F1, F2, F6 y F7, y fusible externo en la línea de S\_LM\_INY1.
+\item Fusibles puestos en F1, F2, F5, F6 y F7, y fusible externo en la línea de S\_LM\_INY1.
 \end{enumerate}
 
 \section{Firmware y red}
@@ -14,15 +14,16 @@ Antes de entregar o instalar un poste, recorre esta prueba completa. La hoja de 
 \item Al encender aparece la red «\dato{redPropiaSsid}» (no «WLED-AP»).
 \item La contraseña de la red propia ya no es la de fábrica.
 \item \texttt{http://\dato{redPropiaIp}} abre LUMA; \texttt{http://\dato{redPropiaIp}/settings} abre los ajustes de WLED.
-\item En «LED \& Hardware»: dos salidas de \dato{ledsPorCara}, cara A en RMT y cara B en I2S, total \dato{ledsTotal}.
+\item En «LED \& Hardware», con «Custom bus start indices» marcado: dos salidas de \dato{ledsPorCara} que empiezan en 0, cara A en RMT y cara B en I2S, «Total LEDs: \dato{ledsWled} (\dato{ledsTotal} physical)» (sección~\ref{sec:salidas-wled}).
 \end{enumerate}
 
 \section{Luces}
 \begin{enumerate}[resume]
 \item Color fijo rojo, luego verde, luego azul: las dos caras muestran el mismo color en todos los píxeles. Si rojo y verde salen cambiados, el orden de color está mal (debe ser RGB).
 \item Blanco al 100~\%: el último píxel de cada cara no se ve amarillento (si se ve, falta inyección).
-\item Un efecto en movimiento (por ejemplo «Fuego ámbar»): las dos caras se mueven igual.
-\item La vista «En vivo» de LUMA coincide con lo que se ve en el poste.
+\item Un efecto en movimiento (por ejemplo «Fuego ámbar») y uno aleatorio (por ejemplo «Destellos» o «Fireworks 1D»): las dos caras se mueven igual, píxel por píxel.
+\item La bandera («Fiestas patrias» en Escenas) y luego otro efecto: el efecto nuevo cubre todo el poste.
+\item La vista «En vivo» de LUMA (un solo poste, «Caras A y B») coincide con lo que se ve en el poste.
 \end{enumerate}
 
 \section{Funciones de LUMA}
@@ -42,7 +43,7 @@ Antes de entregar o instalar un poste, recorre esta prueba completa. La hoja de 
 \section{Medidas que se anotan}
 \begin{itemize}
 \item Tensión de salida del LM2596.
-\item Corriente total del poste en blanco al 100~\% (pinza amperimétrica en el cable de 12~V).
+\item Corriente total del poste en blanco al 100~\% (pinza amperimétrica en el cable de 12~V). Referencia: \dato{corrientePoste}.
 \item Temperatura dentro de la caja tras 30 minutos en blanco al 100~\%.
 \end{itemize}
 

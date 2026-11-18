@@ -48,13 +48,13 @@ Los temas están en \texttt{src/lib/themes.js}. Un tema reparte el poste en band
 \begin{codigo}
 { id: 'amor', name: 'Amor y amistad', description: 'Latido rosa y rojo',
   swatch: ['#ff2d55', '#ff7ab8', '#000000'],
-  build: (total, layout) => build(total, [
+  build: total => build(total, [
     [0.5, design('heartbeat'), 'Base'],
     [0.5, design('heartbeat', { colors: ['#ff7ab8', '#000000'] }), 'Copa'],
-  ], layout) },
+  ]) },
 \end{codigo}
 
-Cada banda es \texttt{[fracción del poste, diseño, nombre]}; las fracciones suman 1. \texttt{design(id, cambios)} toma un efecto de \texttt{scenes.js} y le cambia lo que indiques. \texttt{swatch} son los tres colores de la tarjeta. La prueba de \texttt{tests/controller-features.test.js} construye todos los temas para 50, 100, 200 y 400 LED: si un tema no cuadra, \texttt{npm test} falla.
+Cada banda es \texttt{[fracción del poste, diseño, nombre]}; las fracciones suman 1 y se cuentan de abajo hacia arriba sobre una cara (\texttt{total} es la cantidad de LED de una cara). La cara B no se escribe: la repite el controlador. \texttt{design(id, cambios)} toma un efecto de \texttt{scenes.js} y le cambia lo que indiques. \texttt{swatch} son los tres colores de la tarjeta. La prueba de \texttt{tests/controller-features.test.js} construye todos los temas para 50, 100, 200 y 400 LED: si un tema no cuadra, \texttt{npm test} falla.
 
 \section{Añadir una paleta}
 

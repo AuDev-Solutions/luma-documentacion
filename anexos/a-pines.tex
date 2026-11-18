@@ -11,6 +11,8 @@ Reserva (\texttt{GPIO\_C} → B2) & GPIO\dato{pinesEsquema.GPIO_C} & --- & --- \
 \bottomrule
 \end{tabularx}
 
+En WLED, las dos salidas empiezan en el LED 0 sea cual sea el pin: la cara B repite a la cara A (sección~\ref{sec:salidas-wled}). En el poste que funciona, los GPIO\dato{pinesPosteActual.caraA} y \dato{pinesPosteActual.caraB} son los pines \dato{padsPosteActual.caraA} y \dato{padsPosteActual.caraB} del módulo, que el trazado de la \dato{pcbVersion} no conecta (sección~\ref{sec:pines}).
+
 \pendiente{pinesConfirmados}{Confirmar en la placa fabricada qué GPIO lleva los datos de cada cara (procedimiento en la sección~\ref{sec:comprobar-pin}) y actualizar \texttt{datos/poste.json} y \texttt{archivos/cfg-plantilla.json}.}
 
 \section{Alimentación y otros pines de la ESP32}
