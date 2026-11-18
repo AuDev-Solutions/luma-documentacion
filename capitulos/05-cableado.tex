@@ -50,6 +50,5 @@ Los fusibles son de vidrio de 5×20~mm, los que se compraron (capítulo~\ref{cap
 \item Regulador (F5): \dato{fusibleRegulador}. El LM2596 con la ESP32 toma menos de 0,3~A de 12~V. Si el fusible se funde al conectar la fuente, por el pico de carga de los condensadores, cámbialo por uno de 1~A de acción lenta.
 \item A la salida de la fuente, antes de dividir los ramales: \dato{fusibleFuente}. Lleva las dos caras (\dato{corrientePoste}) más el regulador, unos 3,5~A en total.
 \end{itemize}
-Un fusible de vidrio no debe trabajar por encima del 75~\% de su valor, y aguanta menos cuando hace calor. El de 5~A de la fuente es el más ajustado: si se funde con el poste en blanco al 100~\% en un día de calor, baja el brillo máximo en LUMA o cambia ese fusible por uno de 6,3~A. Los portafusibles de la placa son abiertos: solo sirven dentro de la caja estanca.
+Un fusible de vidrio no debe trabajar por encima del 75~\% de su valor, y aguanta menos cuando hace calor. El de 5~A de la fuente es el más ajustado. El poste funcionó casi 4~horas seguidas con la bandera de Colombia y otros efectos sin problema; si se funde con el poste en blanco al 100~\% en un día de calor, baja el brillo máximo en LUMA o cambia ese fusible por uno de 6,3~A. Los portafusibles de la placa son abiertos: solo sirven dentro de la caja estanca.
 
-\pendiente{fusibles}{Temperatura dentro de la caja tras 30 minutos en blanco al 100~\%, para confirmar el fusible de 5~A de la fuente, y el fusible de la entrada de 120~V.}

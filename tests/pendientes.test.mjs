@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const raiz = fileURLToPath(new URL('..', import.meta.url));
 // Lo único que el equipo acordó dejar pendiente (diseño, sección 12).
-const permitidos = new Set(['repositorioApp', 'fusibles', 'listaCompra']);
+const permitidos = new Set(['repositorioApp', 'listaCompra']);
 
 function archivosTex(dir) {
   return readdirSync(dir).flatMap(nombre => {
