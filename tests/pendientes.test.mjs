@@ -5,8 +5,8 @@ import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const raiz = fileURLToPath(new URL('..', import.meta.url));
-// Lo único que el equipo acordó dejar pendiente (diseño, sección 12).
-const permitidos = new Set(['repositorioApp', 'listaCompra']);
+// Versión 1.0: el manual se entrega sin datos pendientes.
+const permitidos = new Set([]);
 
 function archivosTex(dir) {
   return readdirSync(dir).flatMap(nombre => {
@@ -16,7 +16,7 @@ function archivosTex(dir) {
   });
 }
 
-test('solo quedan pendientes los datos acordados con el equipo', () => {
+test('el manual no tiene datos pendientes', () => {
   for (const ruta of archivosTex(raiz)) {
     if (ruta.endsWith('luma.sty')) continue;
     for (const [, clave] of readFileSync(ruta, 'utf8').matchAll(/\\pendiente\{([^}]*)\}/g)) {

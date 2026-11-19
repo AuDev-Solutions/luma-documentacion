@@ -49,7 +49,7 @@ function leerCsv(csv) {
 
 export function bomCsvATex(csv) {
   const filas = leerCsv(csv).map(([refs, valor, huella, cantidad, dnp]) => {
-    const notas = [proveedores[valor] ?? 'por confirmar'];
+    const notas = [proveedores[valor] ?? 'no está en los pedidos'];
     if (referencias(refs).includes('F5')) notas.push('en placas de antes del 18-11-2026, F5 no protege (capítulo 2)');
     if (dnp) notas.push('no se monta (DNP)');
     const huellaCorta = huella.split(':').pop().split('_').slice(0, 3).join(' ');

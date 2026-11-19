@@ -21,8 +21,8 @@ test('la fila de fusibles avisa de las placas viejas con F5 puenteado, aunque ve
   assert.match(filas.find(fila => fila.includes('F5')), /F5 no protege/);
 });
 
-test('un componente sin proveedor conocido queda por confirmar', () => {
-  assert.match(filas.find(fila => fila.startsWith('R1')), /por confirmar/);
+test('un componente sin proveedor conocido dice que no está en los pedidos', () => {
+  assert.match(filas.find(fila => fila.startsWith('R1')), /no está en los pedidos/);
 });
 
 const imagenes = ['esquema.pdf', 'cobre-superior.pdf', 'cobre-inferior.pdf', '3d-superior.png', '3d-inferior.png'];

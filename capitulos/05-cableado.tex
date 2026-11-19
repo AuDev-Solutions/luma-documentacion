@@ -5,12 +5,12 @@
 \caption{Conexiones de la \dato{pcbVersion} según el esquema.}\label{fig:cableado}
 \end{figure}
 
-\advertencia{La fuente se conecta a la red de 120~V. Haz todas las conexiones con la red desconectada, usa terminales adecuados y conecta el borne de tierra de la fuente. La entrada de corriente alterna debe quedar protegida y fuera del alcance del público.}
+\advertencia{La fuente se conecta a la red de 120~V. Haz todas las conexiones con la red desconectada y usa terminales adecuados. El poste se conecta con un cable dúplex de dos hilos y una clavija sin polo a tierra, así que el borne de tierra de la fuente queda libre. Por eso la fuente debe ir dentro de la caja cerrada, sin tocar partes metálicas que el público pueda alcanzar. Si la caja o el poste son metálicos, usa un cable de tres hilos y conecta la tierra. La entrada de corriente alterna debe quedar fuera del alcance del público.}
 
 \section{Fuente y placa}
 
 \begin{enumerate}
-\item Fuente: L, N y tierra a la red eléctrica (con la red desconectada).
+\item Fuente: L y N al cable dúplex de 2×18~AWG con su clavija (con la red desconectada). El borne de tierra queda libre (ver la advertencia de arriba).
 \item Salida de 12~V de la fuente a S\_LM\_INY1 (borne 2 +12~V, borne 1 GND).
 \item Salida de 12~V de la fuente a S\_A\_B1 (borne 2 +12~V, borne 1 GND).
 \item Pon un fusible externo en el cable de la fuente que va a S\_LM\_INY1. Protege el cable entero; en la placa, F5, F1 y F2 protegen cada ramal. En una placa fabricada antes de la corrección de F5 (capítulo~\ref{cap:pcb}), este fusible externo es la única protección del regulador.

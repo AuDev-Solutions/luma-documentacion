@@ -26,14 +26,18 @@ Cada comando debe responder con un número de versión.
 
 \section{Obtener el código}
 
-El código del proyecto se entrega en GitHub: la app LUMA y esta documentación en sus repositorios, y WLED desde su repositorio oficial en la versión exacta que se probó.
+El código del proyecto se entrega en GitHub, y WLED se descarga de su repositorio oficial en la versión exacta que se probó:
+\begin{itemize}
+\item App LUMA: \url{https://github.com/AuDev-Solutions/luma-app}
+\item Esta documentación: \url{https://github.com/AuDev-Solutions/luma-documentacion}
+\end{itemize}
 
-\pendiente{repositorioApp}{Dirección del repositorio de GitHub donde se entrega LUMA (y de esta documentación). Mientras tanto se escribe \texttt{<repositorio-luma>}.}
+\nota{Los dos repositorios son privados. Para clonarlos, pide acceso a AuDev Solutions con tu usuario de GitHub e inicia sesión en Git la primera vez que lo pida.}
 
 \begin{comando}
 mkdir C:\Proyectos\LUMA
 cd C:\Proyectos\LUMA
-git clone <repositorio-luma> luma-app
+git clone https://github.com/AuDev-Solutions/luma-app.git luma-app
 git clone https://github.com/wled/WLED.git WLED
 cd WLED
 git checkout 961961fd

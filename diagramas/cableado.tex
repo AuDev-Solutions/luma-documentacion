@@ -11,18 +11,19 @@
 ]
   % --- Entrada 1: regulador e inyección ---
   \node[bornera] (in1) at (0,0) {S\_LM\_INY1\\+12 V · GND};
-  \node[aviso] (f5) at (3.6,0) {F5\\puenteado};
+  \node[fusible] (f5) at (3.6,0) {F5};
   \node[pieza] (lm) at (7.2,0) {LM2596\\12 V → \dato{reguladorSalida}};
   \node[pieza] (esp) at (12.2,0) {ESP32-S3\\5V / GND};
   \node[fusible] (f1) at (3.6,-1.6) {F1};
   \node[fusible] (f2) at (3.6,-2.8) {F2};
   \node[bornera] (iny1) at (7.2,-1.6) {INY1 · inyección 1};
   \node[bornera] (iny2) at (7.2,-2.8) {INY2 · inyección 2};
-  \draw[v12] (in1) -- (f5);
-  \draw[v12] (f5) -- node[above, red]{+12V\_INY} (lm);
+  \draw[v12] (in1) -- node[above, red, pos=0.45]{+12V\_INY} (f5);
+  \draw[v12] (f5) -- node[above, red]{+12V\_LM} (lm);
   \draw[v12] (lm) -- node[above, red]{+5V\_ESP} (esp);
-  \draw[v12] (f5.south) -- (f1.north);
-  \draw[v12] (f5.south west) ++(1mm,0) -- ++(0,-1mm) -- ++(-5mm,0) |- (f2.west);
+  \fill[rojoaviso!80!black] (2.25,0) circle (0.6mm);
+  \draw[v12] (2.25,0) |- (f1.west);
+  \draw[v12] (2.25,0) |- (f2.west);
   \draw[v12] (f1) -- (iny1);
   \draw[v12] (f2) -- (iny2);
 
@@ -42,5 +43,5 @@
   \draw[dat] (esp.south) -- node[right, font=\sffamily\scriptsize, align=left]{señales\\de datos} (b2.north);
   \draw[dat] (b2.west) ++(0,1.5mm) -- ++(-5mm,0) |- (a1.east);
   \draw[dat] (b2.west) ++(0,-1.5mm) -- ++(-5mm,0) |- (b1.east);
-  \node[font=\sffamily\scriptsize, text=naranjapend, align=center] at (12.2,-6.75) {Pin GPIO de cada cara: \PENDIENTE};
+  \node[font=\sffamily\scriptsize, align=center] at (12.2,-6.85) {Poste que funciona: cara A en GPIO\dato{pinesPosteActual.caraA}, cara B en GPIO\dato{pinesPosteActual.caraB}\\ESP32 soldada en la \dato{pcbVersion}: GPIO\dato{pinesEsquema.GPIO_A} y GPIO\dato{pinesEsquema.GPIO_B}};
 \end{tikzpicture}
